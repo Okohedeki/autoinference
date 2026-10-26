@@ -1,0 +1,36 @@
+[project]
+name = "autoinference"
+version = "0.1.0"
+description = "A slotted LLM inference engine whose every part is a swappable plugin"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "torch>=2.4",
+    "safetensors>=0.4",
+    "transformers>=4.51",
+    "huggingface_hub>=0.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+autoinference = "autoinference.cli:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+autoinference = ["configs/*.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "real_weights: needs a downloaded checkpoint (set AUTOINFERENCE_REAL_MODEL)",
+]

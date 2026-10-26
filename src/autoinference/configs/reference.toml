@@ -1,0 +1,28 @@
+# Every slot filled by its reference implementation.
+# Slow, readable and the yardstick every other implementation is checked against.
+
+[engine]
+device = "auto"
+dtype = "float32"
+page_size = 16
+max_num_seqs = 8
+max_num_batched_tokens = 512
+max_model_len = 4096
+profile = false
+
+[parts]
+renderer = "hf-tokenizer"
+scheduler = "fcfs"
+overlap = "none"
+spec-planner = "off"
+kv-allocator = "paged"
+prefix-cache = "none"
+input-prep = "reference"
+executor = "eager"
+placement = "single-device"
+loader = "safetensors"
+sampler = "reference"
+spec-drafter = "off"
+
+[ops]
+default = "reference"

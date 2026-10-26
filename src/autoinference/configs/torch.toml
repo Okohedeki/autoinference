@@ -1,0 +1,27 @@
+# The reference engine with PyTorch-native ops swapped in where they exist,
+# and prefix caching turned on. Shows per-slot and per-instance selection.
+
+[engine]
+device = "auto"
+dtype = "bfloat16"
+page_size = 16
+max_num_seqs = 8
+max_num_batched_tokens = 512
+max_model_len = 4096
+
+[parts]
+prefix-cache = "block-hash"
+
+[ops]
+default = "reference"
+linear = "torch"
+attn-prefill = "torch-sdpa"
+attn-decode = "torch-sdpa"
+moe-experts = "grouped"
+
+# Overrides match on any of: layer_type, phase, device, layers = [first, last].
+# Example: keep the reference decode attention on the first two layers.
+[[ops.override]]
+slot = "attn-decode"
+layers = [0, 1]
+impl = "reference"
