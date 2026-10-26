@@ -83,58 +83,97 @@ Both halves matter. If tuned configurations are not much faster, the project has
 | `transform` | An offline change to weights or model files | `apply(model) → model'`; runs once before serving | Quality gate: divergence from the reference model on held-out prompts, plus task evals |
 | `config` | A system or runtime setting | `apply(environment)`; may require restart | Output equivalence; no correctness risk beyond that |
 
-### 3.3 Canonical slot list
+### 3.3 Parts and slots
 
-This list replaces the two partially overlapping vocabularies in the earlier reports. Device-specific slot names (separate CPU and GPU MoE slots, for example) are merged into device-neutral ones.
+The decomposition below comes from reading the source of four production engines (DeepInfer, llama.cpp, vLLM and SGLang) and recording every subsystem that exists as its own module, class family or registry in at least one of them. A **part** is such a subsystem. A **slot** is the unit the search assigns a plugin to; most parts contain one slot, and the op library contains many.
 
-**Model compute (kernels)**
+A part was kept only if it has a stable interface to its neighbours and can be verified on its own. Parts present in only one engine were kept when they exist there as a distinct subsystem (for example explicit placement in llama.cpp, or a draft-length planner in DeepInfer's scheduler).
 
-| Slot | Contract (in → out) | Notes |
-|---|---|---|
-| `linear` | activations, weight in some format → activations | Covers dense projections and the LM head. Instance groups split by weight format, device and batch bucket (GEMV-like vs GEMM-like). |
-| `moe-experts` | routed tokens, selected expert weights → combined outputs | Covers grouped GEMM, per-expert GEMV, gather/scatter and finalize. Instance groups by device and tokens-per-expert bucket. |
-| `router` | hidden states → expert ids and weights | Softmax/sigmoid, top-k, grouping. Lossless unless the plugin changes k (then lossy, see `expert-prune`). |
-| `attn-prefill` | Q, K, V or cache, mask spec → output, cache writes | Per layer type: full, sliding window, sinks, gated output, latent (MLA-style), sparse-indexed. |
-| `attn-decode` | Q, cache view, mask spec → output | Same per-layer-type variants; also tree masks for speculative verification. |
-| `recurrent-mixer` | input, state → output, state' | Linear-attention, delta-rule and state-space layers. Separate chunked-prefill and recurrent-decode instance groups. |
-| `fused-elementwise` | element-wise or reduction chains | Norms, residual adds, rotary embedding, activation-gating, quantize/dequantize of activations. Usually claims spans adjacent to other slots. |
-| `sampler` | logits, sampling params, optional grammar mask → token ids | Includes penalties and constrained decoding. |
-| `collective` | tensors across devices → reduced or exchanged tensors | All-reduce, all-to-all. Only instantiated on multi-device machines. |
+**Serving.** Infrastructure the search uses but does not tune.
 
-**Memory and data movement**
-
-| Slot | Kind | Contract | Notes |
+| Part | Slots | Kind | Responsibility |
 |---|---|---|---|
-| `placement` | policy | tensor names, phase, profile → device or buffer per tensor | Declarative rules over tensor and module names. Re-planned whenever another slot changes memory demand. |
-| `expert-cache` | policy | expert ids per step → hit or miss, admission, eviction | Must assert it is actually engaged (hit rate logged). |
-| `offload-scheduler` | policy | routed counts per layer and step → compute-where-resident vs move-to-device, overlap plan | The crossover point between computing on the host and streaming weights is a learned parameter, not a constant. |
-| `transfer` | kernel + policy | copy requests → staged, overlapped copies | Pinned staging buffers, copy-engine use, prefetch distance. |
-| `kv-dtype` | kernel | KV write/read in a storage format | Defines the cache layout tokens consumed by attention plugins (section 5). |
-| `kv-select` | policy | cache, attention statistics → retained or selected entries | Eviction and sparse retrieval. Lossy unless the plugin proves otherwise. |
-| `kv-allocator` | policy | sequences, budget → block tables | Paged, per-layer-type pools, prefix sharing. |
-| `kv-tier` | policy | prefix blocks → device, host or disk tiers | Prefix persistence and reuse. |
-| `loader` | config | files → resident weights | mmap vs direct read, staging, file location. |
+| API server | none | infrastructure | HTTP and CLI entry points, request validation, streaming. |
+| Renderer | none | infrastructure | Chat templates, tokenization, incremental detokenization, output parsing. |
+| Multimodal front | `mm-preprocess`, `mm-encoder` | kernel | Media decoding and preprocessing; the vision or audio encoder forward pass; encoder output cache. |
+| Replica coordinator | `replica-balance` | policy | Spreads requests across engine replicas. Multi-replica only. |
 
-**Runtime control**
+**Control**
 
-| Slot | Kind | Contract | Notes |
+| Part | Slots | Kind | Responsibility |
 |---|---|---|---|
-| `scheduler` | policy | queue state → batch plan | Token budget, chunked prefill, priorities, preemption. Chunk size also sets kernel shape buckets. |
-| `executor` | policy | slot graph → launches | Graph capture mode, launch grouping, sync mode, CPU thread affinity, host/device overlap. |
-| `spec-drafter` | kernel + policy | context, hidden states → draft tokens | Draft models, extra heads, n-gram and suffix drafting, the model's own multi-token heads. |
-| `spec-verifier` | kernel | drafts, target logits → accepted tokens | Acceptance rule; must keep the output distribution exact. |
-| `spec-controller` | policy | acceptance statistics, verify cost → draft length or off | Speculation can be a net loss on some setups, so "off" is always a candidate. |
-| `os-config` | config | environment → system settings | Memory limits, huge pages, power and clock settings, file system choice. |
+| Scheduler | `scheduler` | policy | Admission, continuous batching, chunked prefill, priorities, preemption. Produces a frozen batch plan each step. |
+| Overlap | `overlap` | policy | Whether and how host scheduling of step N+1 overlaps device execution of step N, and how lagging host state is corrected. |
+| Speculation planner | `spec-planner` | policy | Chooses draft length or turns speculation off per request, from acceptance statistics and measured verify cost. |
 
-**Offline transforms**
+**Memory**
 
-| Slot | Kind | Contract | Notes |
+| Part | Slots | Kind | Responsibility |
 |---|---|---|---|
-| `weight-format` | transform | high-precision tensors (+ calibration) → encoded tensors per tensor | Per-tensor format choice. The cheapest format to decode differs by device, so this couples to `placement`. |
-| `weight-rotation` | transform | weights → rotated weights | Hadamard or learned rotations folded offline; affects quantization error, not runtime cost. |
-| `expert-prune` | transform or policy | router, experts → reduced expert set or k | Lossy by definition; opt-in only and gated on quality. |
+| KV and state allocator | `kv-allocator`, `kv-dtype` | policy, kernel | Pages or slots for each attention type (full, sliding window, recurrent state, hybrid); storage format of cached entries. |
+| Prefix cache | `prefix-cache` | policy | Finding, sharing and evicting reusable prefixes. Kept separate from the allocator. |
+| KV tiers | `kv-tier`, `kv-select` | policy | Host and disk tiers, transfer connectors, sparse selection or eviction of cached entries. |
+| Activation memory | `workspace` | policy | Allocation and reuse of activation and scratch buffers. |
 
-**Out of scope for plugins:** architecture changes that require retraining (new attention types, trained sparsity, retrofitted layers). The catalog records them so that the engine can host such models when they exist, but the search never proposes them.
+**Execution**
+
+| Part | Slots | Kind | Responsibility |
+|---|---|---|---|
+| Input preparation | `input-prep` | kernel, policy | Turns a batch plan into what kernels consume: positions, page tables, attention metadata. |
+| Model runner | none | infrastructure | Holds the model and drives one forward step. |
+| Executor | `executor` | policy | Launch strategy, graph capture or compilation, streams, synchronization mode, threads. |
+| Placement | `placement` | policy | Device or buffer for each tensor, by declarative rules over tensor names. |
+| Expert residency | `expert-cache`, `expert-balance` | policy | Which experts stay on fast memory, and rebalancing expert load across devices. |
+| Data movement | `transfer`, `offload-scheduler` | kernel, policy | Copies between devices; whether to compute where data lives or move it. |
+| Parallelism | `parallelism`, `collective` | policy, kernel | Splitting the model across devices; collective operations. Multi-device only. |
+
+**Model**
+
+| Part | Slots | Kind | Responsibility |
+|---|---|---|---|
+| Architecture registry | none | infrastructure | Maps a model's configuration to a graph of slot instances. |
+| Weight loader | `loader` | config | Reads weight files into memory: mmap or direct read, staging. |
+| Weight format | `weight-format`, `weight-rotation`, `expert-prune` | transform | Per-tensor numeric format, offline rotations, opt-in lossy expert reduction. |
+| Adapters | `adapter` | kernel | LoRA and similar low-rank adapters applied to linear and expert layers. |
+| Op library | see below | kernel | The model's arithmetic. |
+
+The op library is where most kernel slots live. Each op family is a separate slot, and each slot has instance groups (section 3.4):
+
+| Op slot | Contract (in → out) |
+|---|---|
+| `embedding` | token ids → hidden states |
+| `linear` | activations, weights in some format → activations |
+| `norm` | hidden states → normalized hidden states (optionally fused with residual add) |
+| `rotary` | queries, keys, positions → rotated queries and keys |
+| `kv-write` | new keys and values, slot mapping → updated cache |
+| `attn-prefill` | queries, cache view, mask spec → outputs; per layer type |
+| `attn-decode` | queries, cache view, mask spec → outputs; per layer type, including tree masks for verification |
+| `recurrent-mixer` | input, state → output, new state; chunked prefill and recurrent decode |
+| `activation` | gated or plain activation functions |
+| `moe-router` | hidden states → expert ids and weights |
+| `moe-dispatch` | tokens, routing → tokens grouped by expert (and across devices) |
+| `moe-experts` | grouped tokens, expert weights → expert outputs |
+| `moe-combine` | expert outputs, routing weights → combined hidden states |
+| `lm-head` | hidden states → logits |
+
+**Decoding**
+
+| Part | Slots | Kind | Responsibility |
+|---|---|---|---|
+| Sampler | `sampler`, `logits-processor` | kernel | Penalties, temperature, top-k, top-p and similar, then token selection. |
+| Structured output | `grammar` | kernel, policy | Grammar compilation and per-step token masks. |
+| Speculative drafter | `spec-drafter` | kernel, policy | Proposes draft tokens (draft model, extra heads, n-gram or suffix lookup, the model's own multi-token heads). |
+| Speculative verifier | `spec-verifier` | kernel | Accepts or rejects drafts while keeping the output distribution exact. |
+
+**Platform**
+
+| Part | Slots | Kind | Responsibility |
+|---|---|---|---|
+| Platform layer | none | infrastructure | Device discovery and per-device defaults for every other part. |
+| System config | `os-config` | config | Memory limits, huge pages, power and clock settings, file locations. |
+| Observability | none | infrastructure | Per-part timers and counters. The search reads its signals from here. |
+
+**Out of scope for plugins:** architecture changes that require retraining (new attention types, trained sparsity, retrofitted layers). The catalog records them so the engine can host such models when they exist, but the search never proposes them.
 
 ### 3.4 Slot instances and instance groups
 
@@ -377,7 +416,7 @@ Final scores require running on the benchmark's own hardware. Local runs on othe
 | Milestone | Delivers | Proves |
 |---|---|---|
 | M0 Spec | This document, the canonical slot list and the manifest format. | Shared vocabulary. |
-| M1 Host | Core engine with reference plugins for every model-compute slot, running one small dense model and one small MoE model end to end. | The slot decomposition holds for real models. |
+| M1 Host (MVP) | Core engine with the full part structure and reference plugins, running one small dense model and one small MoE model end to end (section 12). | The slot decomposition holds for real models. |
 | M2 Measurement | Machine profiler, harness with the timing protocol and stages 0–4, record store. | Timings are stable enough to compare. |
 | M3 Wrapped search | Incumbent plugins wrapped from existing libraries for the main slots, and the bandit searcher. Run on at least three different machines. | The core claim: tuned beats default, and winners differ by setup. |
 | M4 Warm start | Similarity search over the record and seeded priors. | Fewer trials to reach a good configuration. |
@@ -389,7 +428,85 @@ The catalog build (section 6) runs in parallel from M1 onward, because M3 needs 
 
 ---
 
-## 12. Platform support
+## 12. M1: the MVP engine
+
+The first build is an engine that is correct and slow, with the full part structure from section 3.3 in place. Its purpose is to prove the decomposition on real models and to give every later plugin a reference to be checked against. Performance is explicitly not a goal.
+
+### 12.1 Scope
+
+- **Language and runtime:** Python 3.11+ and PyTorch only. It runs on CPU on Windows, macOS and Linux, and on CUDA or Apple MPS when present, with no compiled extensions.
+- **Models:** the Qwen3 dense architecture and the Qwen3 MoE architecture. Correctness tests use tiny randomly initialized configurations of both, so they need no downloads and run on CPU. The real-weight check uses the smallest Qwen3 dense checkpoint; a real MoE checkpoint small enough for one consumer GPU follows once the MoE path passes the random-weight tests.
+- **Precision:** FP32 and BF16 weights. No quantized formats.
+- **Single device, single replica.**
+
+### 12.2 How parts are defined and swapped
+
+Each part and each op slot has three things:
+
+1. **An interface**, defined as a Python `Protocol` with typed inputs and outputs.
+2. **A registry**, keyed by slot name, that maps implementation names to classes. Implementations register themselves with a decorator.
+3. **A reference implementation**, written for readability and obvious correctness: plain PyTorch, explicit loops where they make the logic clearer, FP32 accumulation.
+
+An engine configuration file selects an implementation for every slot. Op slots can be overridden per instance group by matching on the instance key (layer type, phase, device). Swapping a part means editing the configuration; no other code changes. Every implementation declares the same manifest fields as section 4, even where the MVP does not yet enforce them, so the format is exercised from the start.
+
+The engine resolves the configuration once at startup into an **op table**: for each slot instance, the chosen implementation. Model code never imports an implementation directly; it calls through the op table. This is what lets one layer use one attention kernel and the next layer another.
+
+### 12.3 Data passed between parts
+
+| Type | Produced by | Consumed by | Content |
+|---|---|---|---|
+| `Request` | API server, renderer | scheduler | Token ids, sampling parameters, stop conditions. |
+| `BatchPlan` | scheduler | input preparation, model runner | Frozen per-step plan: which sequences run, their new token ids, phase per sequence, page tables. |
+| `ForwardInputs` | input preparation | model runner, op slots | Flattened token ids, positions, cache slot mapping, attention metadata per layer type. |
+| `ForwardOutput` | model runner, sampler | scheduler | Logits for the positions that need them, then sampled token ids. |
+| `StepEvents` | scheduler | renderer, API server | New tokens and finished requests, for streaming and detokenization. |
+
+### 12.4 One engine step
+
+1. The scheduler admits waiting requests within its token budget, asks the KV allocator for pages, and emits a `BatchPlan`.
+2. Input preparation turns the plan into `ForwardInputs`.
+3. The model runner executes the architecture's slot graph through the op table: embedding, then per layer norm, linear projections, rotary, KV write, attention (prefill or decode by phase), output projection, residual, norm, and either the MLP or the MoE sequence (router, dispatch, experts, combine); then the final norm and LM head.
+4. The sampler applies logits processors and selects tokens.
+5. The scheduler commits progress, frees pages of finished requests, and emits `StepEvents`.
+
+Observability wraps every slot call with a timer and counter when enabled, so each run reports where time went, per slot and per instance group.
+
+### 12.5 What the MVP implements
+
+| Part | MVP implementations |
+|---|---|
+| API server | Command-line generation and a minimal OpenAI-compatible chat endpoint. |
+| Renderer | Tokenizer and chat template from the model's own tokenizer files; incremental detokenization. |
+| Scheduler | First-come-first-served continuous batching with chunked prefill. |
+| Overlap | `none`. |
+| KV and state allocator | Paged allocator for full-attention layers; BF16 or FP32 cache. |
+| Prefix cache | `none`, then a block-hash prefix cache. |
+| Input preparation | Reference implementation on the host. |
+| Executor | Eager execution. |
+| Placement | Everything on one device. |
+| Weight loader | Safetensors reader. |
+| Op library | A reference implementation for every op slot used by Qwen3 dense and MoE. A second implementation for at least three slots (for example `attn-decode` through PyTorch's fused attention, `linear` through the library call, `moe-experts` grouped by expert instead of looped per token) so swapping is tested on real alternatives. |
+| Sampler | Greedy, temperature, top-k, top-p; repetition penalty as a logits processor. |
+| Speculative drafter, verifier, planner | Interfaces only, with `off` as the single implementation. |
+| Observability | Per-slot timers and counters, printed as a summary or written as JSON. |
+
+Every other part from section 3.3 exists as an interface with no implementation, or with a single trivial one, so later work adds implementations without changing the structure.
+
+### 12.6 Verification
+
+- **Reference match:** for tiny random configurations of both architectures, the engine's logits match Hugging Face transformers within FP32 tolerance, and greedy generation matches token for token.
+- **Real weights:** greedy generation on the smallest Qwen3 dense checkpoint matches Hugging Face transformers token for token for a set of prompts.
+- **Swap equivalence:** for each slot with two implementations, swapping through configuration leaves greedy output identical and logits within tolerance.
+- **Batching equivalence:** generating several requests together gives the same tokens as generating each alone.
+- **Platforms:** the CPU test suite passes on Windows, macOS and Linux.
+
+### 12.7 Done when
+
+All of section 12.6 passes, a run can print its per-slot timing summary, and adding a new implementation of any op slot takes one new file plus a configuration line.
+
+---
+
+## 13. Platform support
 
 The orchestration layer (engine core, searcher, harness, record) must run on Windows, macOS and Linux. Plugins declare the platforms they support through `requires`; the searcher only proposes plugins legal on the current profile, so a machine with no supported accelerator still runs the CPU reference and CPU plugins.
 
@@ -405,7 +522,7 @@ Platform-specific measurements (pinned-memory limits under virtualization, unifi
 
 ---
 
-## 13. Open decisions
+## 14. Open decisions
 
 1. **Host language and graph format.** Python orchestration with plugins in compiled languages and kernel DSLs is the working assumption. The model description format (custom, or derived from an existing model library's configs) is undecided.
 2. **Own engine or wrap existing engines.** The working assumption is a minimal engine of our own, with existing engines' kernels wrapped as plugins. Wrapping whole engines limits which slots can actually be swapped.
@@ -418,6 +535,6 @@ Platform-specific measurements (pinned-memory limits under virtualization, unifi
 
 ---
 
-## 14. Source material
+## 15. Source material
 
 `research_notes/` holds the raw research this spec draws on: technique tables organized by optimization area (`LLM inference optimization techniques/`) and by source engine, venue or benchmark (`Inference techniques by source/`). Those files become catalog input in M1–M3. They contain hardware-specific observations and claimed gains from many different machines; the catalog keeps each gain with the hardware it was measured on and never transfers a number from one platform to another.
