@@ -60,7 +60,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
 def cmd_serve(args: argparse.Namespace) -> None:
     from .server import serve
 
-    serve(_engine_from(args), args.host, args.port)
+    serve(_engine_from(args), args.host, args.port, model_name=args.model)
 
 
 def cmd_parts(args: argparse.Namespace) -> None:

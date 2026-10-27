@@ -37,11 +37,11 @@ def engines():
 
 def test_greedy_matches_transformers(engines):
     engine, hf = engines
-    params = SamplingParams(max_tokens=32, ignore_eos=True)
+    params = SamplingParams(max_tokens=32)  # both sides stop at the end-of-turn token
     for q in QUESTIONS:
         prompt = engine.renderer.apply_chat_template([{"role": "user", "content": q}])
         ours = engine.generate([prompt], params)[0].token_ids
         ids = torch.tensor([prompt], device=hf.device)
         with torch.no_grad():
-            out = hf.generate(ids, max_new_tokens=32, min_new_tokens=32, do_sample=False)
+            out = hf.generate(ids, max_new_tokens=32, do_sample=False)
         assert ours == out[0, len(prompt):].tolist(), q
