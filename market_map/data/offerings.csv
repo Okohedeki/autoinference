@@ -244,3 +244,52 @@ Neousys,appliance,vision,edge,regulated;enterprise,logistics;government,hardware
 Litmus Edge,platform,vision;multimodal,edge,enterprise,manufacturing,license,ease,us,"Industrial data and AI platform that runs analytics and models next to factory equipment."
 Kong AI Gateway,gateway,llm,on-prem;cloud,enterprise,horizontal,subscription,privacy,us,"API gateway extended with LLM routing, rate limiting and policy enforcement."
 Vercel AI Gateway,gateway,llm,cloud,developers,horizontal,per-token,ease,us,"Gateway for calling many model providers from web apps with one key and fallbacks."
+Buzz Solutions,platform;edge-runtime,vision;video,edge;cloud,regulated;enterprise,energy,subscription,customization,us,"Analyzes substation camera video at the edge on Jetson for security, safety, fire and equipment problems."
+Ubicquia,appliance;platform,vision;video,edge,regulated;enterprise,energy,hardware;subscription,ease,us,"Units mounted on substation lighting that process video, thermal and plate data at the edge for utilities."
+Intel SAP Threat Sense,platform;edge-runtime,vision,edge,regulated;enterprise,energy,subscription,privacy,global,Substation security service running computer vision on site to check people against badge photos.
+Noteworthy AI,appliance;platform,vision,edge;cloud,regulated;enterprise,energy,subscription,ease,us,Truck-mounted cameras with onboard compute that find and assess utility poles while crews drive.
+Avathon,platform,vision;video,edge;on-prem;cloud,enterprise;regulated,energy;manufacturing,subscription,breadth,us,Industrial AI platform whose visual AI watches existing camera feeds for hazards at energy and industrial sites.
+Hitachi substation monitoring,appliance;platform,vision;video,edge;cloud,regulated;enterprise,energy,hardware;license,breadth,global,Thermal and visible cameras with edge analytics for monitoring utility substations.
+Percepto,platform;appliance,vision,edge;cloud,enterprise;regulated,energy,subscription,ease,global,Autonomous docked drones that collect visual and thermal inspection data at energy sites.
+Cerence AI,platform;engine,speech;llm;multimodal,device;cloud,oem,automotive,license,customization,global,"Embedded and hybrid in-car voice assistants for automakers, including a small language model that runs on the head unit offline."
+SoundHound AI,platform;engine,speech;llm;multimodal,device;cloud,oem,automotive,license,privacy,global,In-car voice AI with edge and cloud arbitration and a fully embedded agentic voice option.
+Liquid AI automotive,engine,speech;llm,device,oem,automotive,license,efficiency,us,Small foundation models running inside cars for speech recognition and reasoning under an automaker partnership.
+Google on-device automotive speech,engine,speech,device,oem,automotive,license,efficiency,global,On-device speech recognition and synthesis supplied to automakers for offline infotainment.
+Alexa Auto SDK,platform;engine,speech,device;cloud,oem,automotive,license,breadth,global,"Automotive voice SDK with an offline extension for car control, media and navigation commands."
+Sensory,engine,speech,device,oem,horizontal;automotive,license,efficiency,us,"Embedded wake word and speech recognition engines licensed for DSPs, microcontrollers and car systems."
+Kardome,engine,speech,device,oem,automotive,license,customization,global,Spatial hearing AI on in-vehicle compute that separates speakers by cabin zone.
+Kaleris AI Gate,platform;appliance,vision,edge,enterprise,logistics,subscription;license,speed,global,"Yard gate vision that reads container, chassis and plate IDs and checks damage with on-site processing."
+Terminal Industries,platform;appliance,vision,edge;cloud,enterprise,logistics,subscription,ease,us,Computer vision gate automation for freight yards that matches trucks to appointments.
+Camco Technologies,appliance;platform,vision,edge;on-prem,enterprise,logistics,hardware;license,speed,eu,"Port gate and crane OCR portals, some running AI on the camera to read containers and plates."
+Docker Vision,appliance;edge-runtime,vision,edge,enterprise,logistics,hardware;license,speed,global,Edge gate OCR system for port terminals handling several camera feeds on Intel hardware.
+Coram AI,appliance;platform,vision;video,edge;cloud,enterprise;smb,logistics;construction;horizontal,subscription;hardware,ease,us,"Video AI on local devices for dock delays, intrusion and site security, including solar trailer retrofits."
+NAVA DockView,platform,vision,on-prem;cloud,enterprise,logistics,subscription,ease,global,"Uses existing CCTV to detect dock occupancy, trailer movements and loading progress."
+Leica Xsight360,appliance,vision,device;edge,enterprise;oem,construction,hardware,privacy,global,Cameras and an onboard AI processor on heavy machines that detect people and vehicles around them.
+Blaxtair,appliance,vision,device,enterprise;oem,construction;manufacturing,hardware,speed,eu,"Embedded AI camera for excavators, loaders and forklifts that warns operators of nearby pedestrians."
+SenseHuman AI,appliance,vision,device,enterprise,construction,hardware,privacy,canada,Camera-equipped hard hat that spots job-site hazards and alerts the wearer.
+Guardhat,appliance,vision;speech,device,enterprise,construction;manufacturing,hardware;subscription,privacy,us,"Connected smart hard hat with cameras, microphones and on-device processing for worker safety."
+Milesight,appliance,vision;video,device;edge,enterprise;smb,construction;horizontal,hardware,ease,global,Cameras and solar trailers with on-device AI for hard-hat and intrusion detection on job sites.
+Deep Sentinel,appliance,vision;video,edge;cloud,enterprise;smb,construction,subscription,ease,us,Mobile surveillance trailer with edge AI backed by remote human guards.
+DSLRPros ArgusLite,appliance,vision;video,edge,smb;enterprise,construction,hardware;subscription,cost,us,"Mobile AI surveillance trailer with cameras, onboard recorder and 5G, sold or leased."
+InHand EC5550,appliance,vision,edge,enterprise,construction,hardware,privacy,global,Edge computer that analyzes job-site camera feeds locally for safety management.
+Veea,appliance;platform,vision,edge,enterprise,construction,hardware;subscription,privacy,us,"Edge platform running job-site safety, compliance and asset-tracking AI fully on site."
+Everguard Sentri360,appliance;platform,vision,edge;cloud,enterprise,construction;manufacturing,subscription,breadth,us,"Edge computer vision plus sensors and wearables for PPE, zone and proximity safety at industrial and construction sites."
+Spot AI,appliance;platform,vision;video,edge;cloud,enterprise;smb,horizontal;construction,subscription,ease,us,Camera systems with on-site recorders running video AI for safety alerts.
+viAct,platform,vision,cloud;on-prem;edge,enterprise,construction,subscription,breadth,asia,"Construction monitoring platform with many vision modules for PPE, danger zones, fleet and progress on existing CCTV, deployable on-prem."
+Intenseye,platform,vision,cloud;on-prem,enterprise,manufacturing;construction,subscription,breadth,global,"Workplace safety vision platform detecting dozens of safety indicators on existing CCTV, with hybrid on-prem deployment."
+Protex AI,platform;edge-runtime,vision,edge,enterprise,manufacturing;logistics,subscription,privacy,eu,Safety vision that processes CCTV on an on-site edge device and sends only event clips to the cloud.
+OATI Genie,platform,llm,dedicated,regulated,energy,subscription,privacy,us,Generative and agentic AI platform for the energy industry hosted in the vendor's own data centers for grid operators.
+C3 Generative AI,platform,llm,cloud;on-prem,enterprise;regulated,horizontal;energy,subscription,breadth,us,LLM-agnostic enterprise generative AI with fine-tuned models available for air-gapped deployment.
+SLB Lumi,platform,llm;science,cloud;on-prem,enterprise,energy,subscription,customization,global,"Oil and gas data and AI platform embedding LLMs and domain foundation models, available on-premises."
+Cognite Atlas AI,platform,llm,cloud,enterprise,energy;manufacturing,subscription,breadth,eu,Industrial agent workbench that selects among a library of language models for each agent.
+ibl.ai,platform;gateway,llm,on-prem;dedicated,enterprise;regulated,horizontal;energy,license,privacy,us,"Self-hosted, air-gappable multi-model AI platform delivered as source code and marketed to utilities."
+StackAI,platform,llm,cloud;on-prem,enterprise,energy;horizontal,subscription,ease,us,Agent-building platform with an on-premise option and an oil and gas offering.
+Lyzr,platform,llm,cloud;on-prem,enterprise,energy;horizontal,subscription,privacy,us,Agent platform marketed as secure generative AI for utilities.
+Edgify,platform;edge-runtime,vision,edge;on-prem,enterprise,retail,subscription,privacy,global,"Edge platform that deploys, monitors and updates vision models across fleets of in-store devices for checkout loss prevention."
+Tapway SamurAI,platform,vision;multimodal,edge;on-prem,enterprise,retail,subscription,privacy,asia,"No-code vision AI that turns store cameras into an on-site system for shelf monitoring and loss prevention, able to run air-gapped."
+Everseen,platform,vision,edge,enterprise,retail,subscription,scale,eu,Vision agents for checkout shrink and store processes running on a large network of in-store edge endpoints.
+Fingermark Eyecue,platform,vision,edge,enterprise,retail,subscription,speed,global,"Restaurant vision analytics for drive-thru, dining and kitchen running on in-store hardware."
+Sensormatic Solutions,platform,vision,edge;on-prem,enterprise,retail,subscription,speed,us,Retail loss prevention vendor running vision analytics on edge servers inside stores.
+Lanner,appliance,vision,edge,oem;enterprise,retail;manufacturing,hardware,efficiency,global,Rugged Jetson-based edge AI appliances for retail loss prevention and industrial vision.
+Supermicro retail edge,appliance,vision,edge,oem;enterprise,retail,hardware,breadth,us,Compact in-store edge servers with a reference design for retail loss prevention vision.
+CLIKA,optimization,vision;multimodal,edge;on-prem,enterprise;oem,horizontal,license,efficiency,us,"Compression engine that shrinks and compiles vision, audio and language models for many hardware targets."
