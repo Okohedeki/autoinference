@@ -1,0 +1,5 @@
+torch>=2.4
+transformers>=4.51
+huggingface_hub>=0.24
+numpy>=1.26
+umap-learn>=0.5

@@ -1,0 +1,450 @@
+<meta charset="utf-8">
+<title>Inference Whitespace Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the embedding map fills the screen; the ranked openings float over its right edge. */
+:root {
+  --bg: #0a0d11;
+  --veil: rgba(12, 16, 21, 0.78);
+  --fg: #e4e9ee;
+  --fg2: #95a1ad;
+  --fg3: #5a6672;
+  --hair: rgba(149, 161, 173, 0.12);
+  --ice: #7db4d6;      /* existing offerings: the filled market */
+  --amber: #f3a53f;    /* openings: decoded voids */
+  --dust: #56677a;     /* the space of possible products */
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #eef1f4; --veil: rgba(246, 248, 250, 0.84); --fg: #111820; --fg2: #4d5a67; --fg3: #8592a0;
+    --hair: rgba(17, 24, 32, 0.1); --ice: #2c6a92; --amber: #b5600a; --dust: #b9c3cd; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #eef1f4; --veil: rgba(246, 248, 250, 0.84); --fg: #111820; --fg2: #4d5a67; --fg3: #8592a0;
+  --hair: rgba(17, 24, 32, 0.1); --ice: #2c6a92; --amber: #b5600a; --dust: #b9c3cd; color-scheme: light;
+}
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font-body); overflow: hidden; }
+.app { position: relative; height: 100%; }
+canvas#map { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+canvas#map.dragging { cursor: grabbing; }
+
+.head {
+  position: absolute; top: 20px; left: max(16px, env(safe-area-inset-left, 0px)); max-width: 30rem;
+  pointer-events: none; display: grid; gap: 6px;
+}
+.head h1 { font: 700 clamp(26px, 3.4vw, 42px)/1.02 var(--font-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.head h1 em { font-style: normal; color: var(--amber); }
+.head p { margin: 0; color: var(--fg2); max-width: 26rem; }
+.stats { font: 12px var(--font-mono); color: var(--fg3); font-variant-numeric: tabular-nums; display: flex; gap: 14px; flex-wrap: wrap; }
+.stats b { color: var(--fg); font-weight: 500; }
+
+.legend {
+  position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  display: flex; gap: 16px; flex-wrap: wrap; font: 12px var(--font-mono); color: var(--fg2);
+  background: var(--veil); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 8px;
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+.panel {
+  position: absolute; top: 12px; right: max(12px, env(safe-area-inset-right, 0px)); bottom: 12px; width: min(400px, 36vw);
+  background: var(--veil); backdrop-filter: blur(14px); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
+}
+.filters { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 14px 16px 10px; font: 12px var(--font-mono); }
+.filters button {
+  font: inherit; background: none; border: 0; color: var(--fg3); padding: 2px 0; cursor: pointer; border-bottom: 1px solid transparent;
+}
+.filters button[aria-pressed="true"] { color: var(--fg); border-bottom-color: var(--amber); }
+.filters button:focus-visible, .row:focus-visible, .zoom button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.filters .sep { width: 100%; height: 0; }
+
+.detail { padding: 6px 16px 14px; border-bottom: 1px solid var(--hair); display: grid; gap: 10px; }
+.detail .eyebrow { font: 11px var(--font-mono); color: var(--amber); letter-spacing: 0.06em; text-transform: uppercase; }
+.detail h2 { margin: 0; font: 700 22px/1.12 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+.detail p { margin: 0; color: var(--fg2); font-size: 13px; }
+.bars { display: grid; grid-template-columns: auto 1fr auto; gap: 5px 10px; align-items: center; font: 11px var(--font-mono); color: var(--fg2); font-variant-numeric: tabular-nums; }
+.bar { height: 4px; background: var(--hair); border-radius: 2px; overflow: hidden; }
+.bar > div { height: 100%; background: var(--amber); border-radius: 2px; transition: width 400ms ease; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font: 11px var(--font-mono); color: var(--fg2); background: var(--hair); padding: 2px 7px; border-radius: 6px; }
+.chip.hot { color: var(--bg); background: var(--amber); }
+.near { font-size: 12px; color: var(--fg2); }
+.near b { color: var(--ice); font-weight: 500; }
+
+.list { overflow-y: auto; flex: 1; min-height: 0; padding: 4px 0 10px; }
+.row {
+  display: grid; grid-template-columns: 2.2em 1fr auto; gap: 8px; align-items: baseline; padding: 7px 16px; cursor: pointer;
+  border: 0; background: none; color: inherit; text-align: left; width: 100%; font: inherit;
+}
+.row:hover { background: var(--hair); }
+.row .n { font: 12px var(--font-mono); color: var(--fg3); font-variant-numeric: tabular-nums; }
+.row .t { font-size: 13px; color: var(--fg2); min-width: 0; }
+.row .s { font: 12px var(--font-mono); color: var(--fg3); font-variant-numeric: tabular-nums; }
+.row[aria-current="true"] .t { color: var(--fg); }
+.row[aria-current="true"] .n, .row[aria-current="true"] .s { color: var(--amber); }
+.empty { padding: 20px 16px; color: var(--fg3); font-size: 13px; }
+
+.tip {
+  position: absolute; pointer-events: none; max-width: 280px; background: var(--veil); backdrop-filter: blur(10px);
+  padding: 8px 10px; border-radius: 8px; font-size: 12px; color: var(--fg2); transform: translate(12px, 12px);
+}
+.tip b { display: block; color: var(--fg); font-weight: 500; }
+.zoom { position: absolute; right: calc(min(400px, 36vw) + 24px); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 4px; }
+.zoom button {
+  width: 30px; height: 30px; border: 0; border-radius: 8px; background: var(--veil); backdrop-filter: blur(10px);
+  color: var(--fg2); font: 15px var(--font-mono); cursor: pointer;
+}
+.source { font: 11px var(--font-mono); color: var(--fg3); padding: 8px 16px 12px; border-top: 1px solid var(--hair); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+@media (max-width: 760px) {
+  body { overflow: auto; }
+  .app { height: auto; }
+  .stage { position: relative; height: 62vh; min-height: 360px; }
+  .panel { position: static; width: auto; margin: 0 max(12px, env(safe-area-inset-right, 0px)) 12px max(12px, env(safe-area-inset-left, 0px)); max-height: none; }
+  .list { max-height: 60vh; }
+  .zoom { right: max(16px, env(safe-area-inset-right, 0px)); }
+  .legend { display: none; }
+  .head p { display: none; }
+}
+@media (min-width: 761px) { .stage { position: absolute; inset: 0; } }
+</style>
+
+<div class="app">
+  <div class="stage">
+    <canvas id="map" aria-label="Embedding map of AI inference offerings and open positions"></canvas>
+    <header class="head">
+      <h1>Where nobody serves <em>inference</em> yet</h1>
+      <p>Each point is a product embedded by what it does. Amber marks are voids found far from every offering, decoded back into a product.</p>
+      <div class="stats" id="stats"></div>
+    </header>
+    <div class="legend">
+      <span><i style="background:var(--ice)"></i>existing offering</span>
+      <span><i style="background:var(--amber)"></i>open position</span>
+      <span><i style="background:var(--dust)"></i>possible product</span>
+    </div>
+    <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit" aria-label="Fit map">◻</button></div>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+  <aside class="panel" aria-label="Ranked open positions">
+    <div class="filters" id="filters"></div>
+    <section class="detail" id="detail" aria-live="polite"></section>
+    <div class="list" id="list" role="list"></div>
+    <div class="source" id="source"></div>
+  </aside>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+const $ = (id) => document.getElementById(id);
+const canvas = $("map"), ctx = canvas.getContext("2d");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LAYER_NAMES = {
+  "chip": "chips", "gpu-cloud": "GPU clouds", "serverless-api": "model APIs", "engine": "engines",
+  "edge-runtime": "edge runtimes", "appliance": "appliances", "platform": "platforms", "gateway": "gateways",
+  "optimization": "optimization", "observability": "observability",
+};
+const VERTICAL_NAMES = {
+  horizontal: "Any industry", healthcare: "Healthcare", finance: "Finance", legal: "Legal", manufacturing: "Manufacturing",
+  agriculture: "Agriculture", construction: "Construction", retail: "Retail", government: "Government", education: "Education",
+  logistics: "Logistics", energy: "Energy", media: "Media", telecom: "Telecom", automotive: "Automotive",
+};
+
+let colors = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const k of ["ice", "amber", "dust", "fg", "fg2", "fg3", "bg"]) colors[k] = cs.getPropertyValue("--" + k).trim();
+}
+
+// View transform: world coords are the 0..1 UMAP square.
+const view = { x: 0.5, y: 0.5, k: 1 };
+let target = null, W = 0, H = 0, dpr = 1;
+let selected = null, hovered = null;
+const filter = { vertical: "all", selfHosted: false };
+
+function baseScale() {
+  const panelW = W > 760 ? Math.min(400, W * 0.36) + 24 : 0;
+  return Math.min(W - panelW - 32, H - (W > 760 ? 200 : 60)) * 0.92;
+}
+function mapCenterX() { return W > 760 ? (W - (Math.min(400, W * 0.36) + 24)) / 2 : W / 2; }
+function mapCenterY() { return H / 2 + (W > 760 ? 70 : 20); }
+function toScreen(p) {
+  const s = baseScale() * view.k;
+  return [mapCenterX() + (p[0] - view.x) * s, mapCenterY() + (p[1] - view.y) * s];
+}
+function toWorld(sx, sy) {
+  const s = baseScale() * view.k;
+  return [(sx - mapCenterX()) / s + view.x, (sy - mapCenterY()) / s + view.y];
+}
+
+function resize() {
+  const r = canvas.getBoundingClientRect();
+  dpr = window.devicePixelRatio || 1; W = r.width; H = r.height;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  draw();
+}
+
+function visibleIdeas() {
+  return DATA.ideas.filter((d) =>
+    (filter.vertical === "all" || d.facets.vertical === filter.vertical) && (!filter.selfHosted || d.self_hostable));
+}
+
+function hexA(hex, a) {
+  const h = hex.replace("#", "");
+  const n = parseInt(h.length === 3 ? h.split("").map((c) => c + c).join("") : h, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+const offByName = new Map(DATA.offerings.map((o) => [o.name, o]));
+const layerCentroids = (() => {
+  const acc = {};
+  for (const o of DATA.offerings) {
+    const l = o.layer[0];
+    (acc[l] ||= []).push(o.xy);
+  }
+  return Object.entries(acc).filter(([, pts]) => pts.length >= 4).map(([l, pts]) => {
+    const xs = pts.map((p) => p[0]).sort((a, b) => a - b), ys = pts.map((p) => p[1]).sort((a, b) => a - b);
+    return { label: LAYER_NAMES[l] || l, xy: [xs[xs.length >> 1], ys[ys.length >> 1]] };
+  });
+})();
+
+function draw() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const ideas = visibleIdeas();
+  const ideaSet = new Set(ideas);
+
+  // Possible products: faint dust, brighter where the space is emptier.
+  const dlo = 0.06, dmax = 0.2;
+  for (const d of DATA.dust) {
+    const [x, y] = toScreen(d.xy);
+    if (x < -4 || y < -4 || x > W + 4 || y > H + 4) continue;
+    ctx.fillStyle = hexA(colors.dust, 0.35 + 0.65 * Math.min(1, Math.max(0, (d.d - dlo) / (dmax - dlo))));
+    ctx.fillRect(x - 1, y - 1, 2, 2);
+  }
+
+  // Layer labels at the median position of each layer's offerings.
+  ctx.font = `500 11px ${getComputedStyle(document.documentElement).getPropertyValue("--font-mono")}`;
+  ctx.textAlign = "center";
+  ctx.fillStyle = hexA(colors.fg3, 0.9);
+  for (const c of layerCentroids) {
+    const [x, y] = toScreen(c.xy);
+    ctx.fillText(c.label.toUpperCase(), x, y - 14);
+  }
+
+  // Links from the selected opening to its nearest offerings.
+  if (selected && ideaSet.has(selected)) {
+    const [sx, sy] = toScreen(selected.xy);
+    ctx.lineWidth = 1;
+    for (const name of selected.neighbors.slice(0, 3)) {
+      const o = offByName.get(name);
+      if (!o) continue;
+      const [ox, oy] = toScreen(o.xy);
+      ctx.strokeStyle = hexA(colors.ice, 0.5);
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ox, oy); ctx.stroke();
+    }
+  }
+
+  // Existing offerings.
+  const near = new Set(selected ? selected.neighbors.slice(0, 3) : []);
+  const labels = [];
+  for (const o of DATA.offerings) {
+    const [x, y] = toScreen(o.xy);
+    const hot = near.has(o.name) || hovered === o;
+    ctx.fillStyle = hexA(colors.ice, hot ? 1 : 0.62);
+    ctx.beginPath(); ctx.arc(x, y, hot ? 4 : 2.6, 0, Math.PI * 2); ctx.fill();
+    if (hot) labels.push({ name: o.name, x: x + 7, y: y + 4 });
+  }
+  // Stack labels that would collide so each name stays readable.
+  ctx.fillStyle = colors.fg; ctx.textAlign = "left";
+  ctx.font = `500 12px ${getComputedStyle(document.documentElement).getPropertyValue("--font-body")}`;
+  const placed = [];
+  for (const l of labels.sort((a, b) => a.y - b.y)) {
+    const w = ctx.measureText(l.name).width;
+    while (placed.some((p) => l.x < p.x + p.w && p.x < l.x + w && Math.abs(p.y - l.y) < 14)) l.y += 14;
+    placed.push({ ...l, w });
+    ctx.fillText(l.name, l.x, l.y);
+  }
+
+  // Openings: amber, sized by score, glowing when selected.
+  for (const d of ideas) {
+    const [x, y] = toScreen(d.xy);
+    const r = 3 + 5 * d.score;
+    const isSel = d === selected, isHov = d === hovered;
+    ctx.save();
+    if (isSel || isHov) { ctx.shadowColor = colors.amber; ctx.shadowBlur = 18; }
+    ctx.strokeStyle = hexA(colors.amber, isSel ? 1 : 0.85);
+    ctx.lineWidth = isSel ? 2 : 1.25;
+    ctx.fillStyle = hexA(colors.amber, isSel ? 0.9 : 0.22);
+    ctx.beginPath(); ctx.arc(x, y, isSel ? r + 2 : r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    if (d.rank <= 10 || isSel) {
+      ctx.fillStyle = isSel ? colors.fg : hexA(colors.amber, 0.95);
+      ctx.font = `500 10px ${getComputedStyle(document.documentElement).getPropertyValue("--font-mono")}`;
+      ctx.textAlign = "center";
+      ctx.fillText(String(d.rank), x, y - r - 5);
+    }
+  }
+}
+
+function animate() {
+  if (!target) return;
+  const t = 0.16;
+  view.x += (target.x - view.x) * t; view.y += (target.y - view.y) * t; view.k += (target.k - view.k) * t;
+  if (Math.abs(target.x - view.x) < 1e-4 && Math.abs(target.y - view.y) < 1e-4 && Math.abs(target.k - view.k) < 1e-3) {
+    Object.assign(view, target); target = null; draw(); return;
+  }
+  draw(); requestAnimationFrame(animate);
+}
+function glide(to) {
+  if (reduceMotion) { Object.assign(view, to); target = null; draw(); return; }
+  const was = target; target = { ...view, ...to }; if (!was) requestAnimationFrame(animate);
+}
+
+function pct(v) { return Math.round(v * 100); }
+function renderDetail() {
+  const d = selected;
+  const el = $("detail");
+  if (!d) { el.innerHTML = `<p class="empty">No openings match this filter.</p>`; return; }
+  const f = d.facets;
+  const lane = d.same_lane.length ? `${d.same_lane.length} in the same lane: ${d.same_lane.slice(0, 3).join(", ")}` : "Nobody in the same layer and industry";
+  el.innerHTML = `
+    <div class="eyebrow">Opening ${d.rank} of ${DATA.ideas.length} · score ${d.score.toFixed(2)}</div>
+    <h2>${d.title}</h2>
+    <p>${d.description}</p>
+    <div class="bars">
+      <span>emptiness</span><div class="bar"><div style="width:${pct(d.novelty)}%"></div></div><span>${pct(d.novelty)}</span>
+      <span>proven pattern</span><div class="bar"><div style="width:${pct(d.proven)}%"></div></div><span>${pct(d.proven)}</span>
+      <span>adoption gap</span><div class="bar"><div style="width:${pct(d.adoption_gap)}%"></div></div><span>${pct(d.adoption_gap)}</span>
+      <span>buildability</span><div class="bar"><div style="width:${pct(d.buildability)}%"></div></div><span>${pct(d.buildability)}</span>
+    </div>
+    <div class="chips">
+      <span class="chip">${f.layer}</span><span class="chip">${f.modality}</span><span class="chip">${f.deployment}</span>
+      <span class="chip">${f.customer}</span><span class="chip">${f.pricing}</span><span class="chip">${f.differentiator}</span>
+      <span class="chip">${pct(d.adoption)}% of firms use AI</span>
+      ${d.self_hostable ? `<span class="chip hot">self-hosted engine fit</span>` : ""}
+    </div>
+    <p>${d.pitch}</p>
+    <div class="near">${lane}. ${d.vertical_players.length} offerings in ${VERTICAL_NAMES[f.vertical].toLowerCase()} overall.</div>`;
+}
+
+function renderList() {
+  const ideas = visibleIdeas();
+  $("list").innerHTML = ideas.length ? ideas.map((d) => `
+    <button class="row" role="listitem" data-rank="${d.rank}" aria-current="${d === selected}">
+      <span class="n">${String(d.rank).padStart(2, "0")}</span><span class="t">${d.title}</span><span class="s">${d.score.toFixed(2)}</span>
+    </button>`).join("") : `<div class="empty">No openings match. Try another industry.</div>`;
+}
+
+function select(d, fly = true) {
+  selected = d; renderDetail(); renderList(); draw();
+  if (d && fly) glide({ x: d.xy[0], y: d.xy[1], k: Math.max(view.k, 1.8) });
+  const row = d && document.querySelector(`.row[data-rank="${d.rank}"]`);
+  if (row) row.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+}
+
+function renderFilters() {
+  const counts = {};
+  for (const d of DATA.ideas) counts[d.facets.vertical] = (counts[d.facets.vertical] || 0) + 1;
+  const vs = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  $("filters").innerHTML =
+    `<button data-v="all" aria-pressed="${filter.vertical === "all"}">All ${DATA.ideas.length}</button>` +
+    vs.map((v) => `<button data-v="${v}" aria-pressed="${filter.vertical === v}">${VERTICAL_NAMES[v]} ${counts[v]}</button>`).join("") +
+    `<span class="sep"></span><button data-self="1" aria-pressed="${filter.selfHosted}">Self-hosted engine fit only</button>`;
+}
+
+$("filters").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.v) filter.vertical = b.dataset.v;
+  if (b.dataset.self) filter.selfHosted = !filter.selfHosted;
+  renderFilters();
+  const ideas = visibleIdeas();
+  select(ideas.includes(selected) ? selected : ideas[0] || null);
+});
+$("list").addEventListener("click", (e) => {
+  const b = e.target.closest(".row"); if (!b) return;
+  select(DATA.ideas.find((d) => d.rank === +b.dataset.rank));
+});
+
+// Pan, zoom, hover, click.
+let drag = null;
+function pick(sx, sy) {
+  let best = null, bd = 14 * 14;
+  for (const d of visibleIdeas()) {
+    const [x, y] = toScreen(d.xy), dd = (x - sx) ** 2 + (y - sy) ** 2;
+    if (dd < bd) { bd = dd; best = d; }
+  }
+  if (best) return best;
+  bd = 8 * 8;
+  for (const o of DATA.offerings) {
+    const [x, y] = toScreen(o.xy), dd = (x - sx) ** 2 + (y - sy) ** 2;
+    if (dd < bd) { bd = dd; best = o; }
+  }
+  return best;
+}
+canvas.addEventListener("pointerdown", (e) => {
+  drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false };
+  canvas.setPointerCapture(e.pointerId); canvas.classList.add("dragging");
+});
+canvas.addEventListener("pointermove", (e) => {
+  const r = canvas.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
+  if (drag) {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+    const s = baseScale() * view.k;
+    target = null; view.x = drag.vx - dx / s; view.y = drag.vy - dy / s; draw();
+    return;
+  }
+  const h = pick(sx, sy);
+  if (h !== hovered) { hovered = h; draw(); }
+  const tip = $("tip");
+  if (h) {
+    tip.hidden = false; tip.style.left = sx + "px"; tip.style.top = sy + "px";
+    tip.innerHTML = h.facets ? `<b>${h.rank}. ${h.title}</b>${h.pitch.split(". Nearest")[0]}.` : `<b>${h.name}</b>${h.description}`;
+  } else tip.hidden = true;
+});
+canvas.addEventListener("pointerup", (e) => {
+  canvas.classList.remove("dragging");
+  if (drag && !drag.moved) {
+    const r = canvas.getBoundingClientRect(), h = pick(e.clientX - r.left, e.clientY - r.top);
+    if (h && h.facets) select(h);
+  }
+  drag = null;
+});
+canvas.addEventListener("pointerleave", () => { hovered = null; $("tip").hidden = true; draw(); });
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
+  const [wx, wy] = toWorld(sx, sy);
+  const k = Math.min(12, Math.max(0.6, view.k * Math.exp(-e.deltaY * 0.0015)));
+  const s = baseScale() * k;
+  target = null; view.k = k; view.x = wx - (sx - mapCenterX()) / s; view.y = wy - (sy - mapCenterY()) / s; draw();
+}, { passive: false });
+$("zin").onclick = () => glide({ k: Math.min(12, view.k * 1.6) });
+$("zout").onclick = () => glide({ k: Math.max(0.6, view.k / 1.6) });
+$("zfit").onclick = () => glide({ x: 0.5, y: 0.5, k: 1 });
+
+const themeWatch = matchMedia("(prefers-color-scheme: dark)");
+themeWatch.addEventListener("change", () => { readColors(); draw(); });
+new MutationObserver(() => { readColors(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+$("stats").innerHTML =
+  `<span><b>${DATA.offerings.length}</b> offerings</span><span><b>${DATA.candidates.toLocaleString()}</b> combinations searched</span><span><b>${DATA.ideas.length}</b> openings</span>`;
+$("source").textContent = `Embeddings: ${DATA.model}. AI adoption: ${DATA.adoption_source}`;
+$("source").title = $("source").textContent;
+
+readColors();
+renderFilters();
+addEventListener("resize", resize);
+resize();
+select(DATA.ideas[0], false);
+document.fonts && document.fonts.ready.then(draw);
+</script>

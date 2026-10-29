@@ -1,0 +1,3643 @@
+[
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "vision",
+      "deployment": "on-prem",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "open-source",
+      "differentiator": "ease"
+    },
+    "title": "Construction on-prem vision model gateway",
+    "description": "A routing gateway across models and providers for computer vision models, installed on the customer's own servers, sold to large enterprises in construction and trades through open source with paid support, competing on ease of use.",
+    "pitch": "LiteLLM proves the pattern: open-source proxy exposing 100+ LLM providers behind one OpenAI-format API with spend tracking. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Roboflow, LiteLLM, Portkey.",
+    "score": 0.7696,
+    "novelty": 0.984,
+    "nn_distance": 0.1858,
+    "void_distance": 0.1327,
+    "decode_error": 0.1292,
+    "proven": 0.87,
+    "template": "LiteLLM",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Roboflow",
+      "LiteLLM",
+      "Portkey",
+      "Ray Serve",
+      "BentoML"
+    ],
+    "void_between": [
+      "Qualcomm Cloud AI 100",
+      "Doxel",
+      "Kong AI Gateway"
+    ],
+    "void_weights": [
+      0.311,
+      0.401,
+      0.288
+    ],
+    "self_hostable": false,
+    "rank": 1,
+    "xy": [
+      0.6783,
+      0.9264
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "llm",
+      "deployment": "dedicated",
+      "customer": "enterprise",
+      "vertical": "energy",
+      "pricing": "gpu-hour",
+      "differentiator": "breadth"
+    },
+    "title": "Energy private LLM model gateway",
+    "description": "A routing gateway across models and providers for language models, on dedicated single-tenant capacity, sold to large enterprises in energy and utilities through per-GPU-hour pricing, competing on the widest model choice.",
+    "pitch": "Portkey proves the pattern: aI gateway with routing, caching, guardrails and observability across LLM providers. Bring it to energy and utilities, where about 17% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Portkey, Not Diamond, Martian.",
+    "score": 0.6887,
+    "novelty": 0.686,
+    "nn_distance": 0.1444,
+    "void_distance": 0.1212,
+    "decode_error": 0.125,
+    "proven": 0.87,
+    "template": "Portkey",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Portkey",
+      "Not Diamond",
+      "Martian",
+      "Kong AI Gateway",
+      "Together AI"
+    ],
+    "void_between": [
+      "OpenRouter",
+      "Etched",
+      "Deci"
+    ],
+    "void_weights": [
+      0.489,
+      0.51,
+      0.001
+    ],
+    "self_hostable": false,
+    "rank": 2,
+    "xy": [
+      0.7675,
+      0.922
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "energy",
+      "pricing": "license",
+      "differentiator": "privacy"
+    },
+    "title": "Energy on-device vision inference engine",
+    "description": "An inference engine or serving runtime for computer vision models, running on end-user devices, sold to large enterprises in energy and utilities through a software license, competing on data privacy and sovereignty.",
+    "pitch": "Ultralytics proves the pattern: yOLO object detection models and runtime exported to many edge and mobile targets. Bring it to energy and utilities, where about 17% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: OpenVINO, NVIDIA DGX Spark, Ultralytics.",
+    "score": 0.6743,
+    "novelty": 0.717,
+    "nn_distance": 0.1469,
+    "void_distance": 0.1179,
+    "decode_error": 0.1384,
+    "proven": 0.87,
+    "template": "Ultralytics",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenVINO",
+      "NVIDIA DGX Spark",
+      "Ultralytics",
+      "llama.cpp",
+      "ONNX Runtime"
+    ],
+    "void_between": [
+      "GridMatrix / utility AI",
+      "DEEPX",
+      "Private AI"
+    ],
+    "void_weights": [
+      0.293,
+      0.288,
+      0.419
+    ],
+    "self_hostable": true,
+    "rank": 3,
+    "xy": [
+      0.707,
+      0.3852
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "vision",
+      "deployment": "on-prem",
+      "customer": "enterprise",
+      "vertical": "retail",
+      "pricing": "subscription",
+      "differentiator": "breadth"
+    },
+    "title": "Retail on-prem vision model gateway",
+    "description": "A routing gateway across models and providers for computer vision models, installed on the customer's own servers, sold to large enterprises in retail and restaurants through a flat subscription, competing on the widest model choice.",
+    "pitch": "Kong AI Gateway proves the pattern: aPI gateway extended with LLM routing, rate limiting and policy enforcement. Bring it to retail and restaurants, where about 18% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Roboflow, Not Diamond, Portkey.",
+    "score": 0.6671,
+    "novelty": 0.923,
+    "nn_distance": 0.1695,
+    "void_distance": 0.1238,
+    "decode_error": 0.133,
+    "proven": 0.87,
+    "template": "Kong AI Gateway",
+    "adoption": 0.185,
+    "adoption_gap": 0.601,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Hailo",
+      "Axelera AI",
+      "OpenVINO",
+      "Verkada",
+      "Standard AI",
+      "Spectro Cloud / edge Kubernetes",
+      "Scale Computing",
+      "Chooch",
+      "Toast IQ",
+      "Ambarella"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Roboflow",
+      "Not Diamond",
+      "Portkey",
+      "Chooch",
+      "Kong AI Gateway"
+    ],
+    "void_between": [
+      "Not Diamond",
+      "Standard AI",
+      "Tenstorrent"
+    ],
+    "void_weights": [
+      0.237,
+      0.391,
+      0.373
+    ],
+    "self_hostable": false,
+    "rank": 4,
+    "xy": [
+      0.6788,
+      0.9266
+    ]
+  },
+  {
+    "facets": {
+      "layer": "optimization",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "per-token",
+      "differentiator": "breadth"
+    },
+    "title": "Construction vision model optimizer",
+    "description": "Model compression and optimization tooling for computer vision models, hosted in the public cloud, sold to large enterprises in construction and trades through usage-based pricing, competing on the widest model choice.",
+    "pitch": "OctoAI proves the pattern: model compilation and serving platform built on Apache TVM, acquired by NVIDIA. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Pruna AI, OctoAI, Deci.",
+    "score": 0.6648,
+    "novelty": 0.693,
+    "nn_distance": 0.1449,
+    "void_distance": 0.1213,
+    "decode_error": 0.1268,
+    "proven": 0.87,
+    "template": "OctoAI",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Pruna AI",
+      "OctoAI",
+      "Deci",
+      "Neural Magic",
+      "Unsloth"
+    ],
+    "void_between": [
+      "OpenSpace",
+      "Cambricon",
+      "Pruna AI"
+    ],
+    "void_weights": [
+      0.41,
+      0.307,
+      0.282
+    ],
+    "self_hostable": false,
+    "rank": 5,
+    "xy": [
+      0.0988,
+      0.3515
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "regulated",
+      "vertical": "energy",
+      "pricing": "license",
+      "differentiator": "breadth"
+    },
+    "title": "Energy edge vision model API",
+    "description": "A serverless pay-per-use model api for computer vision models, running at edge sites near the work, sold to regulated organizations in energy and utilities through a software license, competing on the widest model choice.",
+    "pitch": "Naver HyperCLOVA X proves the pattern: korean sovereign LLM served through Naver Cloud and private deployments. Bring it to energy and utilities, where about 17% of firms use AI, for regulated organizations running computer vision models. Nearest existing offerings in embedding space: Cloudflare Workers AI, Replicate, Stability AI API.",
+    "score": 0.6365,
+    "novelty": 0.803,
+    "nn_distance": 0.1542,
+    "void_distance": 0.1164,
+    "decode_error": 0.1233,
+    "proven": 0.67,
+    "template": "Naver HyperCLOVA X",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cloudflare Workers AI",
+      "Replicate",
+      "Stability AI API",
+      "Viso.ai",
+      "Chutes"
+    ],
+    "void_between": [
+      "OVHcloud AI Endpoints",
+      "DEEPX",
+      "GridMatrix / utility AI"
+    ],
+    "void_weights": [
+      0.351,
+      0.316,
+      0.333
+    ],
+    "self_hostable": true,
+    "rank": 6,
+    "xy": [
+      0.0358,
+      0.6673
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "consumers",
+      "vertical": "automotive",
+      "pricing": "hardware",
+      "differentiator": "breadth"
+    },
+    "title": "Automotive on-device speech deployment platform",
+    "description": "A managed model deployment platform for speech and audio models, running on end-user devices, sold to consumers in automotive through a hardware purchase, competing on the widest model choice.",
+    "pitch": "Edge Impulse proves the pattern: platform for building and deploying tiny ML models to microcontrollers and edge sensors, now part of Qualcomm. Bring it to automotive, where about 23% of firms use AI, for consumers running speech and audio models. Nearest existing offerings in embedding space: Edge Impulse, Simplismart, Speechmatics.",
+    "score": 0.6252,
+    "novelty": 0.995,
+    "nn_distance": 0.1933,
+    "void_distance": 0.1312,
+    "decode_error": 0.1562,
+    "proven": 0.77,
+    "template": "Edge Impulse",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Edge Impulse",
+      "Simplismart",
+      "Speechmatics",
+      "DigitalOcean GenAI Platform",
+      "NVIDIA DRIVE"
+    ],
+    "void_between": [
+      "Mobileye",
+      "ElevenLabs",
+      "Deci"
+    ],
+    "void_weights": [
+      0.499,
+      0.5,
+      0.001
+    ],
+    "self_hostable": true,
+    "rank": 7,
+    "xy": [
+      0.9323,
+      0.7644
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "logistics",
+      "pricing": "open-source",
+      "differentiator": "scale"
+    },
+    "title": "Transportation edge vision model API",
+    "description": "A serverless pay-per-use model api for computer vision models, running at edge sites near the work, sold to large enterprises in transportation and logistics through open source with paid support, competing on massive scale.",
+    "pitch": "Orange hosted models proves the pattern: telecom operator hosting open models as a managed service for European businesses. Bring it to transportation and logistics, where about 14% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Cloudflare Workers AI, Viso.ai, Stability AI API.",
+    "score": 0.6218,
+    "novelty": 0.659,
+    "nn_distance": 0.1424,
+    "void_distance": 0.1238,
+    "decode_error": 0.1283,
+    "proven": 0.67,
+    "template": "Orange hosted models",
+    "adoption": 0.135,
+    "adoption_gap": 0.709,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Motive",
+      "Neousys"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cloudflare Workers AI",
+      "Viso.ai",
+      "Stability AI API",
+      "Replicate",
+      "Roboflow"
+    ],
+    "void_between": [
+      "Neousys",
+      "Moonshot / DeepSeek APIs",
+      "Chutes"
+    ],
+    "void_weights": [
+      0.497,
+      0.501,
+      0.002
+    ],
+    "self_hostable": true,
+    "rank": 8,
+    "xy": [
+      0.0439,
+      0.673
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "hardware",
+      "differentiator": "breadth"
+    },
+    "title": "Construction on-device vision inference engine",
+    "description": "An inference engine or serving runtime for computer vision models, running on end-user devices, sold to large enterprises in construction and trades through a hardware purchase, competing on the widest model choice.",
+    "pitch": "Ultralytics proves the pattern: yOLO object detection models and runtime exported to many edge and mobile targets. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: OpenVINO, Ultralytics, ONNX Runtime.",
+    "score": 0.6202,
+    "novelty": 0.632,
+    "nn_distance": 0.1404,
+    "void_distance": 0.1316,
+    "decode_error": 0.1456,
+    "proven": 0.77,
+    "template": "Ultralytics",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenVINO",
+      "Ultralytics",
+      "ONNX Runtime",
+      "Roboflow",
+      "llama.cpp"
+    ],
+    "void_between": [
+      "Syntiant",
+      "Yotta Shakti Cloud",
+      "Doxel"
+    ],
+    "void_weights": [
+      0.5,
+      0.001,
+      0.499
+    ],
+    "self_hostable": true,
+    "rank": 9,
+    "xy": [
+      0.7137,
+      0.3818
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "open-source",
+      "differentiator": "privacy"
+    },
+    "title": "Construction on-device vision inference appliance",
+    "description": "A turnkey on-site inference appliance for computer vision models, running on end-user devices, sold to large enterprises in construction and trades through open source with paid support, competing on data privacy and sovereignty.",
+    "pitch": "Neousys proves the pattern: rugged edge AI computers for rail, transport and defense. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Nokia MX Industrial Edge, NVIDIA DGX Spark, Lenovo Hybrid AI.",
+    "score": 0.6108,
+    "novelty": 0.687,
+    "nn_distance": 0.1445,
+    "void_distance": 0.1251,
+    "decode_error": 0.1374,
+    "proven": 0.77,
+    "template": "Neousys",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Nokia MX Industrial Edge",
+      "NVIDIA DGX Spark",
+      "Lenovo Hybrid AI",
+      "Dell AI Factory",
+      "Abaco Systems"
+    ],
+    "void_between": [
+      "OpenSpace",
+      "Abaco Systems",
+      "Deepgram"
+    ],
+    "void_weights": [
+      0.345,
+      0.307,
+      0.347
+    ],
+    "self_hostable": true,
+    "rank": 10,
+    "xy": [
+      0.7507,
+      0.2605
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "per-token",
+      "differentiator": "ease"
+    },
+    "title": "Automotive on-device speech inference engine",
+    "description": "An inference engine or serving runtime for speech and audio models, running on end-user devices, sold to large enterprises in automotive through usage-based pricing, competing on ease of use.",
+    "pitch": "FriendliAI proves the pattern: proprietary inference engine sold as serverless and dedicated endpoints. Bring it to automotive, where about 23% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: Speechmatics, FriendliAI, Picovoice.",
+    "score": 0.5955,
+    "novelty": 0.898,
+    "nn_distance": 0.1656,
+    "void_distance": 0.1267,
+    "decode_error": 0.1478,
+    "proven": 0.77,
+    "template": "FriendliAI",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Speechmatics",
+      "FriendliAI",
+      "Picovoice",
+      "Hugging Face TGI",
+      "llama.cpp"
+    ],
+    "void_between": [
+      "Cartesia",
+      "Mobileye",
+      "AssemblyAI"
+    ],
+    "void_weights": [
+      0.009,
+      0.496,
+      0.495
+    ],
+    "self_hostable": true,
+    "rank": 11,
+    "xy": [
+      0.5395,
+      0.3717
+    ]
+  },
+  {
+    "facets": {
+      "layer": "edge-runtime",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "subscription",
+      "differentiator": "privacy"
+    },
+    "title": "Construction on-device vision edge runtime",
+    "description": "An on-device or edge inference runtime for computer vision models, running on end-user devices, sold to large enterprises in construction and trades through a flat subscription, competing on data privacy and sovereignty.",
+    "pitch": "Siemens Industrial Edge proves the pattern: edge computing platform for running AI apps next to factory automation equipment. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Siemens Industrial Edge, Nokia MX Industrial Edge, Apple Neural Engine.",
+    "score": 0.5953,
+    "novelty": 0.571,
+    "nn_distance": 0.1361,
+    "void_distance": 0.1199,
+    "decode_error": 0.1425,
+    "proven": 0.8,
+    "template": "Siemens Industrial Edge",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.7,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Siemens Industrial Edge",
+      "Nokia MX Industrial Edge",
+      "Apple Neural Engine",
+      "Abaco Systems",
+      "NVIDIA Jetson"
+    ],
+    "void_between": [
+      "Doxel",
+      "Samsung SDS NPU service",
+      "EdgeRunner AI"
+    ],
+    "void_weights": [
+      0.491,
+      0.001,
+      0.507
+    ],
+    "self_hostable": true,
+    "rank": 12,
+    "xy": [
+      0.8266,
+      0.3393
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "regulated",
+      "vertical": "energy",
+      "pricing": "subscription",
+      "differentiator": "speed"
+    },
+    "title": "Energy on-device vision inference appliance",
+    "description": "A turnkey on-site inference appliance for computer vision models, running on end-user devices, sold to regulated organizations in energy and utilities through a flat subscription, competing on the lowest latency.",
+    "pitch": "Neousys proves the pattern: rugged edge AI computers for rail, transport and defense. Bring it to energy and utilities, where about 17% of firms use AI, for regulated organizations running computer vision models. Nearest existing offerings in embedding space: Verkada, Nokia ARC-Pro cell-site AI, Scale Computing.",
+    "score": 0.5953,
+    "novelty": 0.917,
+    "nn_distance": 0.1685,
+    "void_distance": 0.1183,
+    "decode_error": 0.1381,
+    "proven": 0.8,
+    "template": "Neousys",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [
+      "Nokia MX Industrial Edge"
+    ],
+    "neighbors": [
+      "Verkada",
+      "Nokia ARC-Pro cell-site AI",
+      "Scale Computing",
+      "Roboflow",
+      "Qualcomm AI Hub"
+    ],
+    "void_between": [
+      "GridMatrix / utility AI",
+      "Fractile",
+      "Standard AI"
+    ],
+    "void_weights": [
+      0.528,
+      0.471,
+      0.001
+    ],
+    "self_hostable": true,
+    "rank": 13,
+    "xy": [
+      0.7638,
+      0.267
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gpu-cloud",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "per-token",
+      "differentiator": "breadth"
+    },
+    "title": "Agriculture edge vision GPU cloud",
+    "description": "Rentable gpu cloud capacity for computer vision models, running at edge sites near the work, sold to large enterprises in agriculture through usage-based pricing, competing on the widest model choice.",
+    "pitch": "Polarise proves the pattern: sovereign European AI cloud with open model API products. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: AT&T / Verizon edge AI, Lambda, Akamai Inference Cloud.",
+    "score": 0.5919,
+    "novelty": 0.797,
+    "nn_distance": 0.1537,
+    "void_distance": 0.1255,
+    "decode_error": 0.1325,
+    "proven": 0.77,
+    "template": "Polarise",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.25,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "AT&T / Verizon edge AI",
+      "Lambda",
+      "Akamai Inference Cloud",
+      "CoreWeave",
+      "Crusoe"
+    ],
+    "void_between": [
+      "Cassava AI Factory",
+      "Chooch",
+      "Carbon Robotics"
+    ],
+    "void_weights": [
+      0.492,
+      0.002,
+      0.506
+    ],
+    "self_hostable": false,
+    "rank": 14,
+    "xy": [
+      0.3743,
+      0.8423
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "llm",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "logistics",
+      "pricing": "open-source",
+      "differentiator": "efficiency"
+    },
+    "title": "Transportation edge LLM inference appliance",
+    "description": "A turnkey on-site inference appliance for language models, running at edge sites near the work, sold to large enterprises in transportation and logistics through open source with paid support, competing on energy and hardware efficiency.",
+    "pitch": "AAEON proves the pattern: rugged and industrial edge AI boxes and servers. Bring it to transportation and logistics, where about 14% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Nokia MX Industrial Edge, Advantech edge AI, OpenVINO.",
+    "score": 0.5864,
+    "novelty": 0.79,
+    "nn_distance": 0.1531,
+    "void_distance": 0.1178,
+    "decode_error": 0.128,
+    "proven": 0.77,
+    "template": "AAEON",
+    "adoption": 0.135,
+    "adoption_gap": 0.709,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Motive",
+      "Neousys"
+    ],
+    "same_lane": [
+      "Neousys"
+    ],
+    "neighbors": [
+      "Nokia MX Industrial Edge",
+      "Advantech edge AI",
+      "OpenVINO",
+      "Scale Computing",
+      "Lenovo Hybrid AI"
+    ],
+    "void_between": [
+      "Neousys",
+      "FuriosaAI",
+      "Helicone"
+    ],
+    "void_weights": [
+      0.494,
+      0.001,
+      0.505
+    ],
+    "self_hostable": true,
+    "rank": 15,
+    "xy": [
+      0.628,
+      0.2907
+    ]
+  },
+  {
+    "facets": {
+      "layer": "optimization",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "energy",
+      "pricing": "gpu-hour",
+      "differentiator": "privacy"
+    },
+    "title": "Energy edge vision model optimizer",
+    "description": "Model compression and optimization tooling for computer vision models, running at edge sites near the work, sold to large enterprises in energy and utilities through per-GPU-hour pricing, competing on data privacy and sovereignty.",
+    "pitch": "Deci proves the pattern: neural architecture search and optimized models for faster inference, acquired by NVIDIA. Bring it to energy and utilities, where about 17% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Nota AI, Latent AI, Deci.",
+    "score": 0.5856,
+    "novelty": 0.462,
+    "nn_distance": 0.1289,
+    "void_distance": 0.1221,
+    "decode_error": 0.1191,
+    "proven": 0.87,
+    "template": "Deci",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Nota AI",
+      "Latent AI",
+      "Deci",
+      "Pruna AI",
+      "Neural Magic"
+    ],
+    "void_between": [
+      "Nota AI",
+      "Helicone",
+      "Cassava AI Factory"
+    ],
+    "void_weights": [
+      0.507,
+      0.001,
+      0.493
+    ],
+    "self_hostable": true,
+    "rank": 16,
+    "xy": [
+      0.1871,
+      0.3282
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "consumers",
+      "vertical": "automotive",
+      "pricing": "per-token",
+      "differentiator": "efficiency"
+    },
+    "title": "Automotive on-device vision inference engine",
+    "description": "An inference engine or serving runtime for computer vision models, running on end-user devices, sold to consumers in automotive through usage-based pricing, competing on energy and hardware efficiency.",
+    "pitch": "Ultralytics proves the pattern: yOLO object detection models and runtime exported to many edge and mobile targets. Bring it to automotive, where about 23% of firms use AI, for consumers running computer vision models. Nearest existing offerings in embedding space: OpenVINO, Ultralytics, Tesla FSD Computer.",
+    "score": 0.58,
+    "novelty": 0.833,
+    "nn_distance": 0.1573,
+    "void_distance": 0.1217,
+    "decode_error": 0.1521,
+    "proven": 0.77,
+    "template": "Ultralytics",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenVINO",
+      "Ultralytics",
+      "Tesla FSD Computer",
+      "llama.cpp",
+      "ONNX Runtime"
+    ],
+    "void_between": [
+      "Moonshot / DeepSeek APIs",
+      "Nutanix Enterprise AI",
+      "Tesla FSD Computer"
+    ],
+    "void_weights": [
+      0.493,
+      0.001,
+      0.506
+    ],
+    "self_hostable": true,
+    "rank": 17,
+    "xy": [
+      0.7188,
+      0.381
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "license",
+      "differentiator": "ease"
+    },
+    "title": "Agriculture on-device speech inference appliance",
+    "description": "A turnkey on-site inference appliance for speech and audio models, running on end-user devices, sold to large enterprises in agriculture through a software license, competing on ease of use.",
+    "pitch": "Inflection for Enterprise proves the pattern: enterprise LLM deployable on customer hardware, pivoted from consumer chat. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: NVIDIA DGX Spark, Inflection for Enterprise, Picovoice.",
+    "score": 0.5555,
+    "novelty": 0.95,
+    "nn_distance": 0.1746,
+    "void_distance": 0.1238,
+    "decode_error": 0.149,
+    "proven": 0.77,
+    "template": "Inflection for Enterprise",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [
+      "John Deere See & Spray",
+      "Carbon Robotics"
+    ],
+    "neighbors": [
+      "NVIDIA DGX Spark",
+      "Inflection for Enterprise",
+      "Picovoice",
+      "Lenovo Hybrid AI",
+      "Speechmatics"
+    ],
+    "void_between": [
+      "ElevenLabs",
+      "Lambda",
+      "Carbon Robotics"
+    ],
+    "void_weights": [
+      0.488,
+      0.002,
+      0.51
+    ],
+    "self_hostable": true,
+    "rank": 18,
+    "xy": [
+      0.5849,
+      0.2658
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "embeddings",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "per-token",
+      "differentiator": "ease"
+    },
+    "title": "Automotive edge retrieval model API",
+    "description": "A serverless pay-per-use model api for embedding and retrieval models, running at edge sites near the work, sold to large enterprises in automotive through usage-based pricing, competing on ease of use.",
+    "pitch": "Voyage AI proves the pattern: embedding and reranking models with domain variants for code, finance and law, now part of MongoDB. Bring it to automotive, where about 23% of firms use AI, for large enterprises running embedding and retrieval models. Nearest existing offerings in embedding space: Cloudflare Workers AI, Cohere, Fireworks AI.",
+    "score": 0.5506,
+    "novelty": 0.76,
+    "nn_distance": 0.1505,
+    "void_distance": 0.1181,
+    "decode_error": 0.1506,
+    "proven": 0.87,
+    "template": "Voyage AI",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cloudflare Workers AI",
+      "Cohere",
+      "Fireworks AI",
+      "Google Vertex AI",
+      "Jina AI"
+    ],
+    "void_between": [
+      "Jina AI",
+      "vLLM",
+      "Blaize"
+    ],
+    "void_weights": [
+      0.502,
+      0.001,
+      0.497
+    ],
+    "self_hostable": true,
+    "rank": 19,
+    "xy": [
+      0.2374,
+      0.7156
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "open-source",
+      "differentiator": "breadth"
+    },
+    "title": "Automotive on-device LLM model gateway",
+    "description": "A routing gateway across models and providers for language models, running on end-user devices, sold to large enterprises in automotive through open source with paid support, competing on the widest model choice.",
+    "pitch": "LiteLLM proves the pattern: open-source proxy exposing 100+ LLM providers behind one OpenAI-format API with spend tracking. Bring it to automotive, where about 23% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Portkey, LiteLLM, Not Diamond.",
+    "score": 0.5301,
+    "novelty": 0.541,
+    "nn_distance": 0.1341,
+    "void_distance": 0.1174,
+    "decode_error": 0.1349,
+    "proven": 0.87,
+    "template": "LiteLLM",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Portkey",
+      "LiteLLM",
+      "Not Diamond",
+      "Vercel AI Gateway",
+      "Kong AI Gateway"
+    ],
+    "void_between": [
+      "Kong AI Gateway",
+      "Paperspace",
+      "Mobileye"
+    ],
+    "void_weights": [
+      0.506,
+      0.001,
+      0.493
+    ],
+    "self_hostable": false,
+    "rank": 20,
+    "xy": [
+      0.7798,
+      0.8983
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "subscription",
+      "differentiator": "scale"
+    },
+    "title": "Healthcare on-device LLM inference engine",
+    "description": "An inference engine or serving runtime for language models, running on end-user devices, sold to regulated organizations in healthcare through a flat subscription, competing on massive scale.",
+    "pitch": "LM Studio proves the pattern: desktop app for discovering, downloading and chatting with local LLMs, with a local OpenAI-compatible server. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running language models. Nearest existing offerings in embedding space: LM Studio, MLC LLM, LMDeploy.",
+    "score": 0.5231,
+    "novelty": 0.852,
+    "nn_distance": 0.1594,
+    "void_distance": 0.12,
+    "decode_error": 0.1428,
+    "proven": 0.87,
+    "template": "LM Studio",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "LM Studio",
+      "MLC LLM",
+      "LMDeploy",
+      "Hugging Face TGI",
+      "llama.cpp"
+    ],
+    "void_between": [
+      "Nuance DAX Copilot",
+      "NVIDIA DRIVE",
+      "Galileo"
+    ],
+    "void_weights": [
+      0.282,
+      0.377,
+      0.341
+    ],
+    "self_hostable": true,
+    "rank": 21,
+    "xy": [
+      0.5985,
+      0.4296
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "logistics",
+      "pricing": "per-token",
+      "differentiator": "privacy"
+    },
+    "title": "Transportation on-device vision deployment platform",
+    "description": "A managed model deployment platform for computer vision models, running on end-user devices, sold to large enterprises in transportation and logistics through usage-based pricing, competing on data privacy and sovereignty.",
+    "pitch": "Litmus Edge proves the pattern: industrial data and AI platform that runs analytics and models next to factory equipment. Bring it to transportation and logistics, where about 14% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Motive, Roboflow, Samsara.",
+    "score": 0.5186,
+    "novelty": 0.707,
+    "nn_distance": 0.1461,
+    "void_distance": 0.1189,
+    "decode_error": 0.1446,
+    "proven": 0.8,
+    "template": "Litmus Edge",
+    "adoption": 0.135,
+    "adoption_gap": 0.709,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Motive",
+      "Neousys"
+    ],
+    "same_lane": [
+      "Samsara",
+      "Motive"
+    ],
+    "neighbors": [
+      "Motive",
+      "Roboflow",
+      "Samsara",
+      "Landing AI",
+      "Chooch"
+    ],
+    "void_between": [
+      "OpenRouter",
+      "Carbon Robotics",
+      "Scale Donovan"
+    ],
+    "void_weights": [
+      0.251,
+      0.418,
+      0.331
+    ],
+    "self_hostable": true,
+    "rank": 22,
+    "xy": [
+      0.8501,
+      0.5767
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "science",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "license",
+      "differentiator": "breadth"
+    },
+    "title": "Automotive on-device science deployment platform",
+    "description": "A managed model deployment platform for scientific and biology models, running on end-user devices, sold to large enterprises in automotive through a software license, competing on the widest model choice.",
+    "pitch": "NVIDIA BioNeMo proves the pattern: framework and hosted microservices for protein, molecule and genomics models. Bring it to automotive, where about 23% of firms use AI, for large enterprises running scientific and biology models. Nearest existing offerings in embedding space: NVIDIA BioNeMo, Recursion / Isomorphic science models, NVIDIA NIM.",
+    "score": 0.5154,
+    "novelty": 0.534,
+    "nn_distance": 0.1336,
+    "void_distance": 0.1251,
+    "decode_error": 0.1196,
+    "proven": 0.87,
+    "template": "NVIDIA BioNeMo",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "NVIDIA BioNeMo",
+      "Recursion / Isomorphic science models",
+      "NVIDIA NIM",
+      "BentoML",
+      "Baseten"
+    ],
+    "void_between": [
+      "Mobileye",
+      "Contextual AI",
+      "Recursion / Isomorphic science models"
+    ],
+    "void_weights": [
+      0.411,
+      0.197,
+      0.392
+    ],
+    "self_hostable": true,
+    "rank": 23,
+    "xy": [
+      0.4982,
+      0.5858
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "speech",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "gpu-hour",
+      "differentiator": "efficiency"
+    },
+    "title": "Automotive edge speech model API",
+    "description": "A serverless pay-per-use model api for speech and audio models, running at edge sites near the work, sold to large enterprises in automotive through per-GPU-hour pricing, competing on energy and hardware efficiency.",
+    "pitch": "Nscale proves the pattern: aI cloud in the UK and Nordics offering GPU clusters and serverless inference. Bring it to automotive, where about 23% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: Deepgram, Speechmatics, Cartesia.",
+    "score": 0.5117,
+    "novelty": 0.662,
+    "nn_distance": 0.1426,
+    "void_distance": 0.121,
+    "decode_error": 0.1376,
+    "proven": 0.77,
+    "template": "Nscale",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Deepgram",
+      "Speechmatics",
+      "Cartesia",
+      "Cloudflare Workers AI",
+      "Krutrim"
+    ],
+    "void_between": [
+      "FriendliAI",
+      "SiMa.ai",
+      "AssemblyAI"
+    ],
+    "void_weights": [
+      0.001,
+      0.5,
+      0.499
+    ],
+    "self_hostable": true,
+    "rank": 24,
+    "xy": [
+      0.2728,
+      0.9629
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "oem",
+      "vertical": "automotive",
+      "pricing": "subscription",
+      "differentiator": "scale"
+    },
+    "title": "Automotive edge vision model API",
+    "description": "A serverless pay-per-use model api for computer vision models, running at edge sites near the work, sold to device makers in automotive through a flat subscription, competing on massive scale.",
+    "pitch": "Featherless proves the pattern: flat-rate serverless hosting of thousands of long-tail open models. Bring it to automotive, where about 23% of firms use AI, for device makers running computer vision models. Nearest existing offerings in embedding space: Viso.ai, Cloudflare Workers AI, Roboflow.",
+    "score": 0.502,
+    "novelty": 0.678,
+    "nn_distance": 0.1439,
+    "void_distance": 0.124,
+    "decode_error": 0.1465,
+    "proven": 0.67,
+    "template": "Featherless",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Viso.ai",
+      "Cloudflare Workers AI",
+      "Roboflow",
+      "Replicate",
+      "Runware"
+    ],
+    "void_between": [
+      "Stability AI API",
+      "Mobileye",
+      "Moonshot / DeepSeek APIs"
+    ],
+    "void_weights": [
+      0.002,
+      0.497,
+      0.5
+    ],
+    "self_hostable": true,
+    "rank": 25,
+    "xy": [
+      0.0423,
+      0.6661
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "llm",
+      "deployment": "edge",
+      "customer": "consumers",
+      "vertical": "education",
+      "pricing": "open-source",
+      "differentiator": "efficiency"
+    },
+    "title": "Education edge LLM deployment platform",
+    "description": "A managed model deployment platform for language models, running at edge sites near the work, sold to consumers in education through open source with paid support, competing on energy and hardware efficiency.",
+    "pitch": "Litmus Edge proves the pattern: industrial data and AI platform that runs analytics and models next to factory equipment. Bring it to education, where about 33% of firms use AI, for consumers running language models. Nearest existing offerings in embedding space: Khanmigo, Spectro Cloud / edge Kubernetes, Zededa.",
+    "score": 0.4889,
+    "novelty": 0.792,
+    "nn_distance": 0.1532,
+    "void_distance": 0.1185,
+    "decode_error": 0.1337,
+    "proven": 0.67,
+    "template": "Litmus Edge",
+    "adoption": 0.334,
+    "adoption_gap": 0.28,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Verkada",
+      "Khanmigo"
+    ],
+    "same_lane": [
+      "Khanmigo"
+    ],
+    "neighbors": [
+      "Khanmigo",
+      "Spectro Cloud / edge Kubernetes",
+      "Zededa",
+      "Simplismart",
+      "DigitalOcean GenAI Platform"
+    ],
+    "void_between": [
+      "ServiceTitan Titan Intelligence",
+      "Axelera AI",
+      "Khanmigo"
+    ],
+    "void_weights": [
+      0.321,
+      0.378,
+      0.301
+    ],
+    "self_hostable": true,
+    "rank": 26,
+    "xy": [
+      0.749,
+      0.6319
+    ]
+  },
+  {
+    "facets": {
+      "layer": "edge-runtime",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "retail",
+      "pricing": "subscription",
+      "differentiator": "breadth"
+    },
+    "title": "Retail on-device LLM edge runtime",
+    "description": "An on-device or edge inference runtime for language models, running on end-user devices, sold to large enterprises in retail and restaurants through a flat subscription, competing on the widest model choice.",
+    "pitch": "EdgeRunner AI proves the pattern: military language models that run on laptops and devices without connectivity. Bring it to retail and restaurants, where about 18% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Cactus, Liquid AI LEAP, Nexa AI.",
+    "score": 0.4803,
+    "novelty": 0.447,
+    "nn_distance": 0.1279,
+    "void_distance": 0.1184,
+    "decode_error": 0.1387,
+    "proven": 0.77,
+    "template": "EdgeRunner AI",
+    "adoption": 0.185,
+    "adoption_gap": 0.601,
+    "buildability": 0.7,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Hailo",
+      "Axelera AI",
+      "OpenVINO",
+      "Verkada",
+      "Standard AI",
+      "Spectro Cloud / edge Kubernetes",
+      "Scale Computing",
+      "Chooch",
+      "Toast IQ",
+      "Ambarella"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cactus",
+      "Liquid AI LEAP",
+      "Nexa AI",
+      "Google AI Edge LiteRT",
+      "WebLLM"
+    ],
+    "void_between": [
+      "Picovoice",
+      "OpenRouter",
+      "Standard AI"
+    ],
+    "void_weights": [
+      0.339,
+      0.274,
+      0.388
+    ],
+    "self_hostable": true,
+    "rank": 27,
+    "xy": [
+      0.8259,
+      0.403
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "open-source",
+      "differentiator": "breadth"
+    },
+    "title": "Automotive on-device vision deployment platform",
+    "description": "A managed model deployment platform for computer vision models, running on end-user devices, sold to large enterprises in automotive through open source with paid support, competing on the widest model choice.",
+    "pitch": "Litmus Edge proves the pattern: industrial data and AI platform that runs analytics and models next to factory equipment. Bring it to automotive, where about 23% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Roboflow, Landing AI, Motive.",
+    "score": 0.477,
+    "novelty": 0.448,
+    "nn_distance": 0.1279,
+    "void_distance": 0.1193,
+    "decode_error": 0.1298,
+    "proven": 0.8,
+    "template": "Litmus Edge",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Roboflow",
+      "Landing AI",
+      "Motive",
+      "Chooch",
+      "Viso.ai"
+    ],
+    "void_between": [
+      "OpenSpace",
+      "Tesla FSD Computer",
+      "Codeium / Windsurf"
+    ],
+    "void_weights": [
+      0.278,
+      0.374,
+      0.348
+    ],
+    "self_hostable": true,
+    "rank": 28,
+    "xy": [
+      0.846,
+      0.5696
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "license",
+      "differentiator": "efficiency"
+    },
+    "title": "Agriculture on-device LLM inference appliance",
+    "description": "A turnkey on-site inference appliance for language models, running on end-user devices, sold to large enterprises in agriculture through a software license, competing on energy and hardware efficiency.",
+    "pitch": "Inflection for Enterprise proves the pattern: enterprise LLM deployable on customer hardware, pivoted from consumer chat. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: NVIDIA DGX Spark, Inflection for Enterprise, Qualcomm AI200.",
+    "score": 0.4761,
+    "novelty": 0.558,
+    "nn_distance": 0.1352,
+    "void_distance": 0.1229,
+    "decode_error": 0.143,
+    "proven": 0.9,
+    "template": "Inflection for Enterprise",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [
+      "John Deere See & Spray",
+      "Carbon Robotics"
+    ],
+    "neighbors": [
+      "NVIDIA DGX Spark",
+      "Inflection for Enterprise",
+      "Qualcomm AI200",
+      "Positron",
+      "HPE Private Cloud AI"
+    ],
+    "void_between": [
+      "Unsloth",
+      "John Deere See & Spray",
+      "Sarvam AI"
+    ],
+    "void_weights": [
+      0.001,
+      0.507,
+      0.492
+    ],
+    "self_hostable": true,
+    "rank": 29,
+    "xy": [
+      0.5985,
+      0.2397
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "manufacturing",
+      "pricing": "per-token",
+      "differentiator": "breadth"
+    },
+    "title": "Manufacturing vision model gateway",
+    "description": "A routing gateway across models and providers for computer vision models, hosted in the public cloud, sold to large enterprises in manufacturing through usage-based pricing, competing on the widest model choice.",
+    "pitch": "Martian proves the pattern: model router that predicts which LLM will answer each prompt best and cheapest. Bring it to manufacturing, where about 23% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: OpenRouter, Not Diamond, Hugging Face Inference Providers.",
+    "score": 0.4683,
+    "novelty": 0.845,
+    "nn_distance": 0.1586,
+    "void_distance": 0.1184,
+    "decode_error": 0.1473,
+    "proven": 0.87,
+    "template": "Martian",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Axelera AI",
+      "SiMa.ai",
+      "OpenVINO",
+      "Edge Impulse",
+      "Palantir AIP",
+      "Landing AI",
+      "Cognex Edge Learning",
+      "Instrumental",
+      "Siemens Industrial Edge",
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "Scale Computing",
+      "Chooch",
+      "Roboflow",
+      "Gecko Robotics",
+      "DEEPX",
+      "NXP eIQ with Kinara",
+      "Deutsche Telekom Industrial AI Cloud",
+      "Nota AI",
+      "Advantech edge AI",
+      "AAEON",
+      "Litmus Edge"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenRouter",
+      "Not Diamond",
+      "Hugging Face Inference Providers",
+      "Vercel AI Gateway",
+      "Google Vertex AI"
+    ],
+    "void_between": [
+      "Cognex Edge Learning",
+      "Vercel AI Gateway",
+      "Writer"
+    ],
+    "void_weights": [
+      0.505,
+      0.493,
+      0.002
+    ],
+    "self_hostable": false,
+    "rank": 30,
+    "xy": [
+      0.6752,
+      0.916
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "embeddings",
+      "deployment": "edge",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "subscription",
+      "differentiator": "privacy"
+    },
+    "title": "Healthcare edge retrieval model API",
+    "description": "A serverless pay-per-use model api for embedding and retrieval models, running at edge sites near the work, sold to regulated organizations in healthcare through a flat subscription, competing on data privacy and sovereignty.",
+    "pitch": "Cohere proves the pattern: enterprise LLMs, embeddings and rerankers deployable privately in customer clouds or on-prem. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running embedding and retrieval models. Nearest existing offerings in embedding space: Mistral AI, Cohere, Cloudflare Workers AI.",
+    "score": 0.4678,
+    "novelty": 0.755,
+    "nn_distance": 0.15,
+    "void_distance": 0.1191,
+    "decode_error": 0.1518,
+    "proven": 0.77,
+    "template": "Cohere",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Mistral AI",
+      "Cohere",
+      "Cloudflare Workers AI",
+      "OVHcloud AI Endpoints",
+      "SambaNova Cloud"
+    ],
+    "void_between": [
+      "Shield AI Hivemind",
+      "Jina AI",
+      "Replicate"
+    ],
+    "void_weights": [
+      0.506,
+      0.492,
+      0.002
+    ],
+    "self_hostable": true,
+    "rank": 31,
+    "xy": [
+      0.2311,
+      0.7073
+    ]
+  },
+  {
+    "facets": {
+      "layer": "optimization",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "subscription",
+      "differentiator": "ease"
+    },
+    "title": "Healthcare vision model optimizer",
+    "description": "Model compression and optimization tooling for computer vision models, hosted in the public cloud, sold to regulated organizations in healthcare through a flat subscription, competing on ease of use.",
+    "pitch": "Latent AI proves the pattern: edge model optimization for defense hardware with secure deployment. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running computer vision models. Nearest existing offerings in embedding space: Pruna AI, Viz.ai, Paige.",
+    "score": 0.4653,
+    "novelty": 0.968,
+    "nn_distance": 0.1796,
+    "void_distance": 0.1178,
+    "decode_error": 0.1617,
+    "proven": 0.77,
+    "template": "Latent AI",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [
+      "Private AI"
+    ],
+    "neighbors": [
+      "Pruna AI",
+      "Viz.ai",
+      "Paige",
+      "Aidoc",
+      "Deci"
+    ],
+    "void_between": [
+      "Paige",
+      "Nscale",
+      "Fastly AI Accelerator"
+    ],
+    "void_weights": [
+      0.498,
+      0.001,
+      0.501
+    ],
+    "self_hostable": false,
+    "rank": 32,
+    "xy": [
+      0.1028,
+      0.3523
+    ]
+  },
+  {
+    "facets": {
+      "layer": "observability",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "open-source",
+      "differentiator": "ease"
+    },
+    "title": "Construction on-device LLM inference monitor",
+    "description": "Inference monitoring and evaluation tooling for language models, running on end-user devices, sold to large enterprises in construction and trades through open source with paid support, competing on ease of use.",
+    "pitch": "Galileo proves the pattern: evaluation and guardrail models for monitoring hallucinations and quality in production. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Langfuse, Arize, Weights & Biases Weave.",
+    "score": 0.4651,
+    "novelty": 0.25,
+    "nn_distance": 0.114,
+    "void_distance": 0.1188,
+    "decode_error": 0.1474,
+    "proven": 0.77,
+    "template": "Galileo",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Langfuse",
+      "Arize",
+      "Weights & Biases Weave",
+      "Galileo",
+      "Helicone"
+    ],
+    "void_between": [
+      "vLLM",
+      "Arize",
+      "DEEPX"
+    ],
+    "void_weights": [
+      0.001,
+      0.51,
+      0.489
+    ],
+    "self_hostable": false,
+    "rank": 33,
+    "xy": [
+      0.4109,
+      0.3782
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "education",
+      "pricing": "license",
+      "differentiator": "ease"
+    },
+    "title": "Education on-device vision inference appliance",
+    "description": "A turnkey on-site inference appliance for computer vision models, running on end-user devices, sold to large enterprises in education through a software license, competing on ease of use.",
+    "pitch": "Neousys proves the pattern: rugged edge AI computers for rail, transport and defense. Bring it to education, where about 33% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Verkada, Scale Computing, Cognex Edge Learning.",
+    "score": 0.4647,
+    "novelty": 0.727,
+    "nn_distance": 0.1476,
+    "void_distance": 0.1248,
+    "decode_error": 0.1564,
+    "proven": 0.8,
+    "template": "Neousys",
+    "adoption": 0.334,
+    "adoption_gap": 0.28,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Verkada",
+      "Khanmigo"
+    ],
+    "same_lane": [
+      "Verkada"
+    ],
+    "neighbors": [
+      "Verkada",
+      "Scale Computing",
+      "Cognex Edge Learning",
+      "Roboflow",
+      "NVIDIA DGX Spark"
+    ],
+    "void_between": [
+      "Chutes",
+      "Perplexity Sonar API",
+      "Cognex Edge Learning"
+    ],
+    "void_weights": [
+      0.002,
+      0.495,
+      0.503
+    ],
+    "self_hostable": true,
+    "rank": 34,
+    "xy": [
+      0.7809,
+      0.2658
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "license",
+      "differentiator": "speed"
+    },
+    "title": "Agriculture vision chip",
+    "description": "Custom ai chips and accelerator hardware for computer vision models, hosted in the public cloud, sold to large enterprises in agriculture through a software license, competing on the lowest latency.",
+    "pitch": "Rebellions proves the pattern: korean neural processing chips for data center inference sold to telcos and clouds. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Cambricon, Google Cloud TPU, Axelera AI.",
+    "score": 0.4626,
+    "novelty": 0.922,
+    "nn_distance": 0.1693,
+    "void_distance": 0.1254,
+    "decode_error": 0.1345,
+    "proven": 0.87,
+    "template": "Rebellions",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cambricon",
+      "Google Cloud TPU",
+      "Axelera AI",
+      "AWS Inferentia",
+      "DEEPX"
+    ],
+    "void_between": [
+      "Taranis",
+      "Inflection for Enterprise",
+      "Fractile"
+    ],
+    "void_weights": [
+      0.514,
+      0.002,
+      0.485
+    ],
+    "self_hostable": false,
+    "rank": 35,
+    "xy": [
+      0.625,
+      0.1039
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "retail",
+      "pricing": "gpu-hour",
+      "differentiator": "efficiency"
+    },
+    "title": "Retail edge vision model API",
+    "description": "A serverless pay-per-use model api for computer vision models, running at edge sites near the work, sold to large enterprises in retail and restaurants through per-GPU-hour pricing, competing on energy and hardware efficiency.",
+    "pitch": "Nscale proves the pattern: aI cloud in the UK and Nordics offering GPU clusters and serverless inference. Bring it to retail and restaurants, where about 18% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Cloudflare Workers AI, Replicate, Krutrim.",
+    "score": 0.4574,
+    "novelty": 0.425,
+    "nn_distance": 0.1263,
+    "void_distance": 0.1205,
+    "decode_error": 0.1476,
+    "proven": 0.77,
+    "template": "Nscale",
+    "adoption": 0.185,
+    "adoption_gap": 0.601,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Hailo",
+      "Axelera AI",
+      "OpenVINO",
+      "Verkada",
+      "Standard AI",
+      "Spectro Cloud / edge Kubernetes",
+      "Scale Computing",
+      "Chooch",
+      "Toast IQ",
+      "Ambarella"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cloudflare Workers AI",
+      "Replicate",
+      "Krutrim",
+      "SiliconFlow",
+      "Runware"
+    ],
+    "void_between": [
+      "Perplexity Sonar API",
+      "Blaize",
+      "WebLLM"
+    ],
+    "void_weights": [
+      0.485,
+      0.514,
+      0.001
+    ],
+    "self_hostable": true,
+    "rank": 36,
+    "xy": [
+      0.0465,
+      0.6677
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "speech",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "energy",
+      "pricing": "gpu-hour",
+      "differentiator": "speed"
+    },
+    "title": "Energy edge speech model API",
+    "description": "A serverless pay-per-use model api for speech and audio models, running at edge sites near the work, sold to large enterprises in energy and utilities through per-GPU-hour pricing, competing on the lowest latency.",
+    "pitch": "Nscale proves the pattern: aI cloud in the UK and Nordics offering GPU clusters and serverless inference. Bring it to energy and utilities, where about 17% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: Deepgram, Cartesia, Cloudflare Workers AI.",
+    "score": 0.45,
+    "novelty": 0.269,
+    "nn_distance": 0.1154,
+    "void_distance": 0.1196,
+    "decode_error": 0.0976,
+    "proven": 0.8,
+    "template": "Nscale",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Deepgram",
+      "Cartesia",
+      "Cloudflare Workers AI",
+      "Speechmatics",
+      "Groq"
+    ],
+    "void_between": [
+      "AT&T / Verizon edge AI",
+      "Cartesia",
+      "Iternal Turnkey AI"
+    ],
+    "void_weights": [
+      0.369,
+      0.321,
+      0.31
+    ],
+    "self_hostable": true,
+    "rank": 37,
+    "xy": [
+      0.2774,
+      0.9649
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "llm",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "manufacturing",
+      "pricing": "per-token",
+      "differentiator": "ease"
+    },
+    "title": "Manufacturing edge LLM model gateway",
+    "description": "A routing gateway across models and providers for language models, running at edge sites near the work, sold to large enterprises in manufacturing through usage-based pricing, competing on ease of use.",
+    "pitch": "Martian proves the pattern: model router that predicts which LLM will answer each prompt best and cheapest. Bring it to manufacturing, where about 23% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: Portkey, Not Diamond, Martian.",
+    "score": 0.4481,
+    "novelty": 0.745,
+    "nn_distance": 0.1492,
+    "void_distance": 0.1184,
+    "decode_error": 0.1264,
+    "proven": 0.87,
+    "template": "Martian",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Axelera AI",
+      "SiMa.ai",
+      "OpenVINO",
+      "Edge Impulse",
+      "Palantir AIP",
+      "Landing AI",
+      "Cognex Edge Learning",
+      "Instrumental",
+      "Siemens Industrial Edge",
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "Scale Computing",
+      "Chooch",
+      "Roboflow",
+      "Gecko Robotics",
+      "DEEPX",
+      "NXP eIQ with Kinara",
+      "Deutsche Telekom Industrial AI Cloud",
+      "Nota AI",
+      "Advantech edge AI",
+      "AAEON",
+      "Litmus Edge"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Portkey",
+      "Not Diamond",
+      "Martian",
+      "Vercel AI Gateway",
+      "Kong AI Gateway"
+    ],
+    "void_between": [
+      "Advantech edge AI",
+      "Samsara",
+      "OpenRouter"
+    ],
+    "void_weights": [
+      0.499,
+      0.001,
+      0.499
+    ],
+    "self_hostable": false,
+    "rank": 38,
+    "xy": [
+      0.7639,
+      0.9015
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "healthcare",
+      "pricing": "hardware",
+      "differentiator": "ease"
+    },
+    "title": "Healthcare on-device speech inference appliance",
+    "description": "A turnkey on-site inference appliance for speech and audio models, running on end-user devices, sold to large enterprises in healthcare through a hardware purchase, competing on ease of use.",
+    "pitch": "NVIDIA DGX Spark proves the pattern: desktop AI supercomputer with Grace Blackwell for running large models locally. Bring it to healthcare, where about 28% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: NVIDIA DGX Spark, Inflection for Enterprise, Lenovo Hybrid AI.",
+    "score": 0.4436,
+    "novelty": 0.928,
+    "nn_distance": 0.1704,
+    "void_distance": 0.1226,
+    "decode_error": 0.1567,
+    "proven": 0.87,
+    "template": "NVIDIA DGX Spark",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [
+      "Soverance"
+    ],
+    "neighbors": [
+      "NVIDIA DGX Spark",
+      "Inflection for Enterprise",
+      "Lenovo Hybrid AI",
+      "Iternal Turnkey AI",
+      "Picovoice"
+    ],
+    "void_between": [
+      "Google Vertex AI",
+      "Abridge",
+      "John Deere See & Spray"
+    ],
+    "void_weights": [
+      0.002,
+      0.5,
+      0.498
+    ],
+    "self_hostable": true,
+    "rank": 39,
+    "xy": [
+      0.5842,
+      0.2633
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "logistics",
+      "pricing": "open-source",
+      "differentiator": "breadth"
+    },
+    "title": "Transportation vision chip",
+    "description": "Custom ai chips and accelerator hardware for computer vision models, hosted in the public cloud, sold to large enterprises in transportation and logistics through open source with paid support, competing on the widest model choice.",
+    "pitch": "Rebellions proves the pattern: korean neural processing chips for data center inference sold to telcos and clouds. Bring it to transportation and logistics, where about 14% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Google Cloud TPU, Cambricon, NVIDIA Data Center GPUs.",
+    "score": 0.4397,
+    "novelty": 0.872,
+    "nn_distance": 0.162,
+    "void_distance": 0.1189,
+    "decode_error": 0.1504,
+    "proven": 0.87,
+    "template": "Rebellions",
+    "adoption": 0.135,
+    "adoption_gap": 0.709,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Motive",
+      "Neousys"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Google Cloud TPU",
+      "Cambricon",
+      "NVIDIA Data Center GPUs",
+      "AWS Inferentia",
+      "Tenstorrent"
+    ],
+    "void_between": [
+      "Litmus Edge",
+      "Anthropic API",
+      "Mobileye"
+    ],
+    "void_weights": [
+      0.001,
+      0.489,
+      0.51
+    ],
+    "self_hostable": false,
+    "rank": 40,
+    "xy": [
+      0.6249,
+      0.1042
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gpu-cloud",
+      "modality": "vision",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "automotive",
+      "pricing": "gpu-hour",
+      "differentiator": "privacy"
+    },
+    "title": "Automotive edge vision GPU cloud",
+    "description": "Rentable gpu cloud capacity for computer vision models, running at edge sites near the work, sold to large enterprises in automotive through per-GPU-hour pricing, competing on data privacy and sovereignty.",
+    "pitch": "AT&T / Verizon edge AI proves the pattern: telecom carriers offering GPU compute at network edge sites for low-latency enterprise AI. Bring it to automotive, where about 23% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Yotta Shakti Cloud, Sakura Internet, AT&T / Verizon edge AI.",
+    "score": 0.4309,
+    "novelty": 0.622,
+    "nn_distance": 0.1397,
+    "void_distance": 0.1181,
+    "decode_error": 0.1412,
+    "proven": 0.87,
+    "template": "AT&T / Verizon edge AI",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.25,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Blaize",
+      "SiMa.ai",
+      "Tesla FSD Computer",
+      "Mobileye",
+      "NVIDIA DRIVE",
+      "Ambarella",
+      "NXP eIQ with Kinara",
+      "Nota AI"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Yotta Shakti Cloud",
+      "Sakura Internet",
+      "AT&T / Verizon edge AI",
+      "CoreWeave",
+      "Cassava AI Factory"
+    ],
+    "void_between": [
+      "Krutrim",
+      "Cassava AI Factory",
+      "Mobileye"
+    ],
+    "void_weights": [
+      0.001,
+      0.501,
+      0.498
+    ],
+    "self_hostable": false,
+    "rank": 41,
+    "xy": [
+      0.3738,
+      0.8326
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "multimodal",
+      "deployment": "device",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "subscription",
+      "differentiator": "speed"
+    },
+    "title": "Healthcare on-device multimodal inference appliance",
+    "description": "A turnkey on-site inference appliance for multimodal models, running on end-user devices, sold to regulated organizations in healthcare through a flat subscription, competing on the lowest latency.",
+    "pitch": "NVIDIA DGX Spark proves the pattern: desktop AI supercomputer with Grace Blackwell for running large models locally. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running multimodal models. Nearest existing offerings in embedding space: Nexa AI, Nokia ARC-Pro cell-site AI, Apple Neural Engine.",
+    "score": 0.4306,
+    "novelty": 0.892,
+    "nn_distance": 0.1648,
+    "void_distance": 0.1185,
+    "decode_error": 0.1385,
+    "proven": 0.8,
+    "template": "NVIDIA DGX Spark",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [
+      "Soverance"
+    ],
+    "neighbors": [
+      "Nexa AI",
+      "Nokia ARC-Pro cell-site AI",
+      "Apple Neural Engine",
+      "Qualcomm AI Hub",
+      "Google AI Edge LiteRT"
+    ],
+    "void_between": [
+      "Motive",
+      "Abridge",
+      "Nokia ARC-Pro cell-site AI"
+    ],
+    "void_weights": [
+      0.233,
+      0.395,
+      0.372
+    ],
+    "self_hostable": true,
+    "rank": 42,
+    "xy": [
+      0.6931,
+      0.2592
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "multimodal",
+      "deployment": "edge",
+      "customer": "regulated",
+      "vertical": "government",
+      "pricing": "per-token",
+      "differentiator": "ease"
+    },
+    "title": "Government edge multimodal model gateway",
+    "description": "A routing gateway across models and providers for multimodal models, running at edge sites near the work, sold to regulated organizations in government and defense through usage-based pricing, competing on ease of use.",
+    "pitch": "Hugging Face Inference Providers proves the pattern: unified access to partner inference providers directly from the Hugging Face Hub. Bring it to government and defense, where about 20% of firms use AI, for regulated organizations running multimodal models. Nearest existing offerings in embedding space: OpenRouter, Ask Sage, Vercel AI Gateway.",
+    "score": 0.4276,
+    "novelty": 0.988,
+    "nn_distance": 0.1875,
+    "void_distance": 0.1273,
+    "decode_error": 0.1331,
+    "proven": 0.77,
+    "template": "Hugging Face Inference Providers",
+    "adoption": 0.2,
+    "adoption_gap": 0.569,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Blaize",
+      "Palantir AIP",
+      "Ask Sage",
+      "Scale Donovan",
+      "Fortanix Armet AI",
+      "G42 / Core42",
+      "Humain",
+      "Yotta Shakti Cloud",
+      "Sarvam AI",
+      "Aleph Alpha PhariaAI",
+      "SambaNova / Dell sovereign racks",
+      "Shield AI Hivemind",
+      "Anduril Lattice",
+      "EdgeCortix",
+      "BrainChip",
+      "Mistral Compute",
+      "STACKIT",
+      "Naver HyperCLOVA X",
+      "Cassava AI Factory",
+      "Latent AI",
+      "Zylon",
+      "EdgeRunner AI",
+      "Abaco Systems",
+      "Neousys"
+    ],
+    "same_lane": [
+      "Ask Sage"
+    ],
+    "neighbors": [
+      "OpenRouter",
+      "Ask Sage",
+      "Vercel AI Gateway",
+      "Not Diamond",
+      "Hugging Face Inference Providers"
+    ],
+    "void_between": [
+      "OpenRouter",
+      "Ambarella",
+      "EdgeCortix"
+    ],
+    "void_weights": [
+      0.504,
+      0.003,
+      0.494
+    ],
+    "self_hostable": false,
+    "rank": 43,
+    "xy": [
+      0.7431,
+      0.9064
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gpu-cloud",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "per-token",
+      "differentiator": "ease"
+    },
+    "title": "Construction vision GPU cloud",
+    "description": "Rentable gpu cloud capacity for computer vision models, hosted in the public cloud, sold to large enterprises in construction and trades through usage-based pricing, competing on ease of use.",
+    "pitch": "Polarise proves the pattern: sovereign European AI cloud with open model API products. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Lambda, Paperspace, Salad.",
+    "score": 0.4271,
+    "novelty": 0.38,
+    "nn_distance": 0.1232,
+    "void_distance": 0.1305,
+    "decode_error": 0.1251,
+    "proven": 0.87,
+    "template": "Polarise",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.25,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Lambda",
+      "Paperspace",
+      "Salad",
+      "Vast.ai",
+      "Crusoe"
+    ],
+    "void_between": [
+      "Cassava AI Factory",
+      "Doxel",
+      "EnCharge AI"
+    ],
+    "void_weights": [
+      0.496,
+      0.503,
+      0.001
+    ],
+    "self_hostable": false,
+    "rank": 44,
+    "xy": [
+      0.3581,
+      0.8169
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "llm",
+      "deployment": "device",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "subscription",
+      "differentiator": "efficiency"
+    },
+    "title": "Healthcare on-device LLM inference appliance",
+    "description": "A turnkey on-site inference appliance for language models, running on end-user devices, sold to regulated organizations in healthcare through a flat subscription, competing on energy and hardware efficiency.",
+    "pitch": "Iternal Turnkey AI proves the pattern: preconfigured private AI hardware with a local assistant app for regulated small businesses. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running language models. Nearest existing offerings in embedding space: Iternal Turnkey AI, Qualcomm AI200, NVIDIA DGX Spark.",
+    "score": 0.4251,
+    "novelty": 0.86,
+    "nn_distance": 0.1604,
+    "void_distance": 0.1393,
+    "decode_error": 0.1507,
+    "proven": 0.8,
+    "template": "Iternal Turnkey AI",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [
+      "Soverance"
+    ],
+    "neighbors": [
+      "Iternal Turnkey AI",
+      "Qualcomm AI200",
+      "NVIDIA DGX Spark",
+      "Inflection for Enterprise",
+      "Liquid AI LEAP"
+    ],
+    "void_between": [
+      "SiMa.ai",
+      "Galileo",
+      "Abridge"
+    ],
+    "void_weights": [
+      0.373,
+      0.297,
+      0.329
+    ],
+    "self_hostable": true,
+    "rank": 45,
+    "xy": [
+      0.6096,
+      0.2394
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "science",
+      "deployment": "on-prem",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "license",
+      "differentiator": "breadth"
+    },
+    "title": "Agriculture on-prem science chip",
+    "description": "Custom ai chips and accelerator hardware for scientific and biology models, installed on the customer's own servers, sold to large enterprises in agriculture through a software license, competing on the widest model choice.",
+    "pitch": "FuriosaAI proves the pattern: power-efficient inference accelerator cards offered for purchase and as a rented service. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running scientific and biology models. Nearest existing offerings in embedding space: Tenstorrent, AMD Instinct, Cambricon.",
+    "score": 0.418,
+    "novelty": 0.74,
+    "nn_distance": 0.1488,
+    "void_distance": 0.1173,
+    "decode_error": 0.1517,
+    "proven": 0.77,
+    "template": "FuriosaAI",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Tenstorrent",
+      "AMD Instinct",
+      "Cambricon",
+      "NVIDIA Data Center GPUs",
+      "Huawei Ascend"
+    ],
+    "void_between": [
+      "Qualcomm Cloud AI 100",
+      "TensorWave",
+      "Recursion / Isomorphic science models"
+    ],
+    "void_weights": [
+      0.479,
+      0.002,
+      0.519
+    ],
+    "self_hostable": false,
+    "rank": 46,
+    "xy": [
+      0.7125,
+      0.0544
+    ]
+  },
+  {
+    "facets": {
+      "layer": "serverless-api",
+      "modality": "embeddings",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "manufacturing",
+      "pricing": "per-token",
+      "differentiator": "breadth"
+    },
+    "title": "Manufacturing edge retrieval model API",
+    "description": "A serverless pay-per-use model api for embedding and retrieval models, running at edge sites near the work, sold to large enterprises in manufacturing through usage-based pricing, competing on the widest model choice.",
+    "pitch": "Voyage AI proves the pattern: embedding and reranking models with domain variants for code, finance and law, now part of MongoDB. Bring it to manufacturing, where about 23% of firms use AI, for large enterprises running embedding and retrieval models. Nearest existing offerings in embedding space: Cloudflare Workers AI, Cohere, Google Vertex AI.",
+    "score": 0.4177,
+    "novelty": 0.768,
+    "nn_distance": 0.1512,
+    "void_distance": 0.13,
+    "decode_error": 0.161,
+    "proven": 0.87,
+    "template": "Voyage AI",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Axelera AI",
+      "SiMa.ai",
+      "OpenVINO",
+      "Edge Impulse",
+      "Palantir AIP",
+      "Landing AI",
+      "Cognex Edge Learning",
+      "Instrumental",
+      "Siemens Industrial Edge",
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "Scale Computing",
+      "Chooch",
+      "Roboflow",
+      "Gecko Robotics",
+      "DEEPX",
+      "NXP eIQ with Kinara",
+      "Deutsche Telekom Industrial AI Cloud",
+      "Nota AI",
+      "Advantech edge AI",
+      "AAEON",
+      "Litmus Edge"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cloudflare Workers AI",
+      "Cohere",
+      "Google Vertex AI",
+      "Fireworks AI",
+      "Voyage AI"
+    ],
+    "void_between": [
+      "LMCache",
+      "EdgeCortix",
+      "Jina AI"
+    ],
+    "void_weights": [
+      0.001,
+      0.488,
+      0.511
+    ],
+    "self_hostable": true,
+    "rank": 47,
+    "xy": [
+      0.234,
+      0.7154
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "speech",
+      "deployment": "cloud",
+      "customer": "regulated",
+      "vertical": "energy",
+      "pricing": "license",
+      "differentiator": "ease"
+    },
+    "title": "Energy speech chip",
+    "description": "Custom ai chips and accelerator hardware for speech and audio models, hosted in the public cloud, sold to regulated organizations in energy and utilities through a software license, competing on ease of use.",
+    "pitch": "BrainChip proves the pattern: neuromorphic edge AI processor IP licensed to chipmakers for space, defense and IoT. Bring it to energy and utilities, where about 17% of firms use AI, for regulated organizations running speech and audio models. Nearest existing offerings in embedding space: Cambricon, AWS Inferentia, Google Cloud TPU.",
+    "score": 0.4172,
+    "novelty": 0.917,
+    "nn_distance": 0.1685,
+    "void_distance": 0.1269,
+    "decode_error": 0.1333,
+    "proven": 0.77,
+    "template": "BrainChip",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cambricon",
+      "AWS Inferentia",
+      "Google Cloud TPU",
+      "FuriosaAI",
+      "Speechmatics"
+    ],
+    "void_between": [
+      "Axelera AI",
+      "AssemblyAI",
+      "BrainChip"
+    ],
+    "void_weights": [
+      0.003,
+      0.496,
+      0.501
+    ],
+    "self_hostable": false,
+    "rank": 48,
+    "xy": [
+      0.8995,
+      0.0726
+    ]
+  },
+  {
+    "facets": {
+      "layer": "platform",
+      "modality": "science",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "license",
+      "differentiator": "breadth"
+    },
+    "title": "Agriculture on-device science deployment platform",
+    "description": "A managed model deployment platform for scientific and biology models, running on end-user devices, sold to large enterprises in agriculture through a software license, competing on the widest model choice.",
+    "pitch": "NVIDIA BioNeMo proves the pattern: framework and hosted microservices for protein, molecule and genomics models. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running scientific and biology models. Nearest existing offerings in embedding space: NVIDIA BioNeMo, Recursion / Isomorphic science models, NVIDIA NIM.",
+    "score": 0.415,
+    "novelty": 0.327,
+    "nn_distance": 0.1196,
+    "void_distance": 0.1212,
+    "decode_error": 0.161,
+    "proven": 0.87,
+    "template": "NVIDIA BioNeMo",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [
+      "Edge Impulse",
+      "Taranis"
+    ],
+    "neighbors": [
+      "NVIDIA BioNeMo",
+      "Recursion / Isomorphic science models",
+      "NVIDIA NIM",
+      "BentoML",
+      "Litmus Edge"
+    ],
+    "void_between": [
+      "Blaize",
+      "fal.ai",
+      "Recursion / Isomorphic science models"
+    ],
+    "void_weights": [
+      0.492,
+      0.001,
+      0.507
+    ],
+    "self_hostable": true,
+    "rank": 49,
+    "xy": [
+      0.4996,
+      0.5866
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "retail",
+      "pricing": "license",
+      "differentiator": "breadth"
+    },
+    "title": "Retail on-device vision inference appliance",
+    "description": "A turnkey on-site inference appliance for computer vision models, running on end-user devices, sold to large enterprises in retail and restaurants through a software license, competing on the widest model choice.",
+    "pitch": "Neousys proves the pattern: rugged edge AI computers for rail, transport and defense. Bring it to retail and restaurants, where about 18% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Scale Computing, Verkada, Cognex Edge Learning.",
+    "score": 0.4094,
+    "novelty": 0.729,
+    "nn_distance": 0.1478,
+    "void_distance": 0.1271,
+    "decode_error": 0.1397,
+    "proven": 0.77,
+    "template": "Neousys",
+    "adoption": 0.185,
+    "adoption_gap": 0.601,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Hailo",
+      "Axelera AI",
+      "OpenVINO",
+      "Verkada",
+      "Standard AI",
+      "Spectro Cloud / edge Kubernetes",
+      "Scale Computing",
+      "Chooch",
+      "Toast IQ",
+      "Ambarella"
+    ],
+    "same_lane": [
+      "Verkada",
+      "Scale Computing"
+    ],
+    "neighbors": [
+      "Scale Computing",
+      "Verkada",
+      "Cognex Edge Learning",
+      "Roboflow",
+      "John Deere See & Spray"
+    ],
+    "void_between": [
+      "Cognex Edge Learning",
+      "Toast IQ",
+      "Samsung SDS NPU service"
+    ],
+    "void_weights": [
+      0.344,
+      0.295,
+      0.361
+    ],
+    "self_hostable": true,
+    "rank": 50,
+    "xy": [
+      0.7771,
+      0.2641
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "vision",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "license",
+      "differentiator": "speed"
+    },
+    "title": "Construction vision chip",
+    "description": "Custom ai chips and accelerator hardware for computer vision models, hosted in the public cloud, sold to large enterprises in construction and trades through a software license, competing on the lowest latency.",
+    "pitch": "Rebellions proves the pattern: korean neural processing chips for data center inference sold to telcos and clouds. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: Cambricon, Google Cloud TPU, AWS Inferentia.",
+    "score": 0.4034,
+    "novelty": 0.811,
+    "nn_distance": 0.1548,
+    "void_distance": 0.1383,
+    "decode_error": 0.1317,
+    "proven": 0.87,
+    "template": "Rebellions",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Cambricon",
+      "Google Cloud TPU",
+      "AWS Inferentia",
+      "Axelera AI",
+      "Tenstorrent"
+    ],
+    "void_between": [
+      "Glean",
+      "Fractile",
+      "Doxel"
+    ],
+    "void_weights": [
+      0.001,
+      0.49,
+      0.509
+    ],
+    "self_hostable": false,
+    "rank": 51,
+    "xy": [
+      0.624,
+      0.1052
+    ]
+  },
+  {
+    "facets": {
+      "layer": "chip",
+      "modality": "vision",
+      "deployment": "dedicated",
+      "customer": "enterprise",
+      "vertical": "energy",
+      "pricing": "hardware",
+      "differentiator": "scale"
+    },
+    "title": "Energy private vision chip",
+    "description": "Custom ai chips and accelerator hardware for computer vision models, on dedicated single-tenant capacity, sold to large enterprises in energy and utilities through a hardware purchase, competing on massive scale.",
+    "pitch": "Qualcomm AI200 proves the pattern: rack-scale inference systems for sovereign and commercial data centers. Bring it to energy and utilities, where about 17% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: MatX, Etched, FuriosaAI.",
+    "score": 0.3979,
+    "novelty": 0.747,
+    "nn_distance": 0.1494,
+    "void_distance": 0.1289,
+    "decode_error": 0.1455,
+    "proven": 0.87,
+    "template": "Qualcomm AI200",
+    "adoption": 0.167,
+    "adoption_gap": 0.64,
+    "buildability": 0.05,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "GridMatrix / utility AI",
+      "Gecko Robotics"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "MatX",
+      "Etched",
+      "FuriosaAI",
+      "Untether AI",
+      "Rebellions"
+    ],
+    "void_between": [
+      "Iternal Turnkey AI",
+      "Buildots",
+      "Etched"
+    ],
+    "void_weights": [
+      0.002,
+      0.506,
+      0.493
+    ],
+    "self_hostable": false,
+    "rank": 52,
+    "xy": [
+      0.6654,
+      0.0739
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "manufacturing",
+      "pricing": "subscription",
+      "differentiator": "efficiency"
+    },
+    "title": "Manufacturing on-device speech inference engine",
+    "description": "An inference engine or serving runtime for speech and audio models, running on end-user devices, sold to large enterprises in manufacturing through a flat subscription, competing on energy and hardware efficiency.",
+    "pitch": "LM Studio proves the pattern: desktop app for discovering, downloading and chatting with local LLMs, with a local OpenAI-compatible server. Bring it to manufacturing, where about 23% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: llama.cpp, OpenVINO, FriendliAI.",
+    "score": 0.3948,
+    "novelty": 0.948,
+    "nn_distance": 0.1742,
+    "void_distance": 0.1163,
+    "decode_error": 0.1763,
+    "proven": 0.77,
+    "template": "LM Studio",
+    "adoption": 0.229,
+    "adoption_gap": 0.506,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "NVIDIA Jetson",
+      "Hailo",
+      "Axelera AI",
+      "SiMa.ai",
+      "OpenVINO",
+      "Edge Impulse",
+      "Palantir AIP",
+      "Landing AI",
+      "Cognex Edge Learning",
+      "Instrumental",
+      "Siemens Industrial Edge",
+      "Nokia MX Industrial Edge",
+      "Zededa",
+      "Scale Computing",
+      "Chooch",
+      "Roboflow",
+      "Gecko Robotics",
+      "DEEPX",
+      "NXP eIQ with Kinara",
+      "Deutsche Telekom Industrial AI Cloud",
+      "Nota AI",
+      "Advantech edge AI",
+      "AAEON",
+      "Litmus Edge"
+    ],
+    "same_lane": [
+      "OpenVINO"
+    ],
+    "neighbors": [
+      "llama.cpp",
+      "OpenVINO",
+      "FriendliAI",
+      "Syntiant",
+      "Cactus"
+    ],
+    "void_between": [
+      "NVIDIA TensorRT-LLM",
+      "Syntiant",
+      "Jina AI"
+    ],
+    "void_weights": [
+      0.001,
+      0.501,
+      0.499
+    ],
+    "self_hostable": true,
+    "rank": 53,
+    "xy": [
+      0.5403,
+      0.3703
+    ]
+  },
+  {
+    "facets": {
+      "layer": "edge-runtime",
+      "modality": "speech",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "construction",
+      "pricing": "license",
+      "differentiator": "ease"
+    },
+    "title": "Construction on-device speech edge runtime",
+    "description": "An on-device or edge inference runtime for speech and audio models, running on end-user devices, sold to large enterprises in construction and trades through a software license, competing on ease of use.",
+    "pitch": "Picovoice proves the pattern: on-device speech recognition, wake word and voice AI SDKs that run without sending audio to the cloud. Bring it to construction and trades, where about 16% of firms use AI, for large enterprises running speech and audio models. Nearest existing offerings in embedding space: Picovoice, Cactus, Liquid AI LEAP.",
+    "score": 0.3887,
+    "novelty": 0.158,
+    "nn_distance": 0.1059,
+    "void_distance": 0.1229,
+    "decode_error": 0.128,
+    "proven": 0.9,
+    "template": "Picovoice",
+    "adoption": 0.161,
+    "adoption_gap": 0.653,
+    "buildability": 0.7,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Samsara",
+      "Buildots",
+      "OpenSpace",
+      "Doxel",
+      "ServiceTitan Titan Intelligence"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Picovoice",
+      "Cactus",
+      "Liquid AI LEAP",
+      "Nexa AI",
+      "Google AI Edge LiteRT"
+    ],
+    "void_between": [
+      "Doxel",
+      "Untether AI",
+      "Picovoice"
+    ],
+    "void_weights": [
+      0.496,
+      0.001,
+      0.502
+    ],
+    "self_hostable": true,
+    "rank": 54,
+    "xy": [
+      0.5355,
+      0.3239
+    ]
+  },
+  {
+    "facets": {
+      "layer": "optimization",
+      "modality": "speech",
+      "deployment": "edge",
+      "customer": "regulated",
+      "vertical": "government",
+      "pricing": "subscription",
+      "differentiator": "efficiency"
+    },
+    "title": "Government edge speech model optimizer",
+    "description": "Model compression and optimization tooling for speech and audio models, running at edge sites near the work, sold to regulated organizations in government and defense through a flat subscription, competing on energy and hardware efficiency.",
+    "pitch": "Fastly AI Accelerator proves the pattern: semantic caching at the edge that returns cached LLM answers for similar prompts. Bring it to government and defense, where about 20% of firms use AI, for regulated organizations running speech and audio models. Nearest existing offerings in embedding space: Nota AI, Latent AI, Neural Magic.",
+    "score": 0.3871,
+    "novelty": 0.795,
+    "nn_distance": 0.1535,
+    "void_distance": 0.1333,
+    "decode_error": 0.1215,
+    "proven": 0.77,
+    "template": "Fastly AI Accelerator",
+    "adoption": 0.2,
+    "adoption_gap": 0.569,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Blaize",
+      "Palantir AIP",
+      "Ask Sage",
+      "Scale Donovan",
+      "Fortanix Armet AI",
+      "G42 / Core42",
+      "Humain",
+      "Yotta Shakti Cloud",
+      "Sarvam AI",
+      "Aleph Alpha PhariaAI",
+      "SambaNova / Dell sovereign racks",
+      "Shield AI Hivemind",
+      "Anduril Lattice",
+      "EdgeCortix",
+      "BrainChip",
+      "Mistral Compute",
+      "STACKIT",
+      "Naver HyperCLOVA X",
+      "Cassava AI Factory",
+      "Latent AI",
+      "Zylon",
+      "EdgeRunner AI",
+      "Abaco Systems",
+      "Neousys"
+    ],
+    "same_lane": [
+      "Latent AI"
+    ],
+    "neighbors": [
+      "Nota AI",
+      "Latent AI",
+      "Neural Magic",
+      "Pruna AI",
+      "Multiverse Computing"
+    ],
+    "void_between": [
+      "Rebellions",
+      "Rev AI",
+      "Latent AI"
+    ],
+    "void_weights": [
+      0.001,
+      0.496,
+      0.503
+    ],
+    "self_hostable": true,
+    "rank": 55,
+    "xy": [
+      0.156,
+      0.2513
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "llm",
+      "deployment": "edge",
+      "customer": "enterprise",
+      "vertical": "legal",
+      "pricing": "hardware",
+      "differentiator": "scale"
+    },
+    "title": "Legal services edge LLM inference engine",
+    "description": "An inference engine or serving runtime for language models, running at edge sites near the work, sold to large enterprises in legal services through a hardware purchase, competing on massive scale.",
+    "pitch": "OpenVINO proves the pattern: intel toolkit that optimizes and runs models on Intel CPUs, GPUs and NPUs, widely used for edge vision. Bring it to legal services, where about 44% of firms use AI, for large enterprises running language models. Nearest existing offerings in embedding space: OpenVINO, FriendliAI, NVIDIA Dynamo.",
+    "score": 0.3856,
+    "novelty": 0.876,
+    "nn_distance": 0.1625,
+    "void_distance": 0.1245,
+    "decode_error": 0.1387,
+    "proven": 0.87,
+    "template": "OpenVINO",
+    "adoption": 0.438,
+    "adoption_gap": 0.056,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Harvey",
+      "Rev AI",
+      "EvenUp",
+      "Clio Duo",
+      "Soverance"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenVINO",
+      "FriendliAI",
+      "NVIDIA Dynamo",
+      "Soverance",
+      "llm-d"
+    ],
+    "void_between": [
+      "Neousys",
+      "EvenUp",
+      "Cerebras Inference"
+    ],
+    "void_weights": [
+      0.495,
+      0.504,
+      0.001
+    ],
+    "self_hostable": true,
+    "rank": 56,
+    "xy": [
+      0.8263,
+      0.4392
+    ]
+  },
+  {
+    "facets": {
+      "layer": "engine",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "regulated",
+      "vertical": "healthcare",
+      "pricing": "open-source",
+      "differentiator": "efficiency"
+    },
+    "title": "Healthcare on-device vision inference engine",
+    "description": "An inference engine or serving runtime for computer vision models, running on end-user devices, sold to regulated organizations in healthcare through open source with paid support, competing on energy and hardware efficiency.",
+    "pitch": "Ultralytics proves the pattern: yOLO object detection models and runtime exported to many edge and mobile targets. Bring it to healthcare, where about 28% of firms use AI, for regulated organizations running computer vision models. Nearest existing offerings in embedding space: OpenVINO, ONNX Runtime, Ultralytics.",
+    "score": 0.3854,
+    "novelty": 0.382,
+    "nn_distance": 0.1233,
+    "void_distance": 0.1217,
+    "decode_error": 0.1302,
+    "proven": 0.77,
+    "template": "Ultralytics",
+    "adoption": 0.276,
+    "adoption_gap": 0.405,
+    "buildability": 0.75,
+    "direct_competitors": [],
+    "vertical_players": [
+      "H2O.ai",
+      "Abridge",
+      "Nuance DAX Copilot",
+      "Hippocratic AI",
+      "Private AI",
+      "Opaque Systems",
+      "Viz.ai",
+      "Aidoc",
+      "Paige",
+      "Recursion / Isomorphic science models",
+      "NVIDIA BioNeMo",
+      "Soverance",
+      "Prem AI",
+      "Zylon"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "OpenVINO",
+      "ONNX Runtime",
+      "Ultralytics",
+      "Google AI Edge LiteRT",
+      "llama.cpp"
+    ],
+    "void_between": [
+      "DEEPX",
+      "Langfuse",
+      "Viz.ai"
+    ],
+    "void_weights": [
+      0.332,
+      0.352,
+      0.316
+    ],
+    "self_hostable": true,
+    "rank": 57,
+    "xy": [
+      0.7174,
+      0.3829
+    ]
+  },
+  {
+    "facets": {
+      "layer": "gateway",
+      "modality": "llm",
+      "deployment": "edge",
+      "customer": "regulated",
+      "vertical": "government",
+      "pricing": "per-token",
+      "differentiator": "breadth"
+    },
+    "title": "Government edge LLM model gateway",
+    "description": "A routing gateway across models and providers for language models, running at edge sites near the work, sold to regulated organizations in government and defense through usage-based pricing, competing on the widest model choice.",
+    "pitch": "Vercel AI Gateway proves the pattern: gateway for calling many model providers from web apps with one key and fallbacks. Bring it to government and defense, where about 20% of firms use AI, for regulated organizations running language models. Nearest existing offerings in embedding space: Not Diamond, Ask Sage, Portkey.",
+    "score": 0.378,
+    "novelty": 0.694,
+    "nn_distance": 0.1451,
+    "void_distance": 0.1274,
+    "decode_error": 0.1223,
+    "proven": 0.77,
+    "template": "Vercel AI Gateway",
+    "adoption": 0.2,
+    "adoption_gap": 0.569,
+    "buildability": 0.9,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Blaize",
+      "Palantir AIP",
+      "Ask Sage",
+      "Scale Donovan",
+      "Fortanix Armet AI",
+      "G42 / Core42",
+      "Humain",
+      "Yotta Shakti Cloud",
+      "Sarvam AI",
+      "Aleph Alpha PhariaAI",
+      "SambaNova / Dell sovereign racks",
+      "Shield AI Hivemind",
+      "Anduril Lattice",
+      "EdgeCortix",
+      "BrainChip",
+      "Mistral Compute",
+      "STACKIT",
+      "Naver HyperCLOVA X",
+      "Cassava AI Factory",
+      "Latent AI",
+      "Zylon",
+      "EdgeRunner AI",
+      "Abaco Systems",
+      "Neousys"
+    ],
+    "same_lane": [
+      "Ask Sage"
+    ],
+    "neighbors": [
+      "Not Diamond",
+      "Ask Sage",
+      "Portkey",
+      "OpenRouter",
+      "Kong AI Gateway"
+    ],
+    "void_between": [
+      "EdgeCortix",
+      "Standard AI",
+      "OpenRouter"
+    ],
+    "void_weights": [
+      0.495,
+      0.001,
+      0.504
+    ],
+    "self_hostable": false,
+    "rank": 58,
+    "xy": [
+      0.7647,
+      0.9033
+    ]
+  },
+  {
+    "facets": {
+      "layer": "appliance",
+      "modality": "vision",
+      "deployment": "device",
+      "customer": "enterprise",
+      "vertical": "agriculture",
+      "pricing": "open-source",
+      "differentiator": "efficiency"
+    },
+    "title": "Agriculture on-device vision inference appliance",
+    "description": "A turnkey on-site inference appliance for computer vision models, running on end-user devices, sold to large enterprises in agriculture through open source with paid support, competing on energy and hardware efficiency.",
+    "pitch": "Neousys proves the pattern: rugged edge AI computers for rail, transport and defense. Bring it to agriculture, where about 6% of firms use AI, for large enterprises running computer vision models. Nearest existing offerings in embedding space: John Deere See & Spray, Carbon Robotics, Scale Computing.",
+    "score": 0.376,
+    "novelty": 0.312,
+    "nn_distance": 0.1185,
+    "void_distance": 0.1176,
+    "decode_error": 0.1514,
+    "proven": 0.77,
+    "template": "Neousys",
+    "adoption": 0.06,
+    "adoption_gap": 0.871,
+    "buildability": 0.6,
+    "direct_competitors": [],
+    "vertical_players": [
+      "Edge Impulse",
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Taranis"
+    ],
+    "same_lane": [
+      "John Deere See & Spray",
+      "Carbon Robotics"
+    ],
+    "neighbors": [
+      "John Deere See & Spray",
+      "Carbon Robotics",
+      "Scale Computing",
+      "OpenVINO",
+      "Verkada"
+    ],
+    "void_between": [
+      "John Deere See & Spray",
+      "Perplexity Sonar API",
+      "G42 / Core42"
+    ],
+    "void_weights": [
+      0.502,
+      0.496,
+      0.001
+    ],
+    "self_hostable": true,
+    "rank": 59,
+    "xy": [
+      0.7746,
+      0.2677
+    ]
+  },
+  {
+    "facets": {
+      "layer": "optimization",
+      "modality": "science",
+      "deployment": "cloud",
+      "customer": "enterprise",
+      "vertical": "telecom",
+      "pricing": "license",
+      "differentiator": "customization"
+    },
+    "title": "Telecommunications science model optimizer",
+    "description": "Model compression and optimization tooling for scientific and biology models, hosted in the public cloud, sold to large enterprises in telecommunications through a software license, competing on domain customization.",
+    "pitch": "Deci proves the pattern: neural architecture search and optimized models for faster inference, acquired by NVIDIA. Bring it to telecommunications, where about 46% of firms use AI, for large enterprises running scientific and biology models. Nearest existing offerings in embedding space: Neural Magic, Pruna AI, NVIDIA BioNeMo.",
+    "score": 0.3747,
+    "novelty": 0.946,
+    "nn_distance": 0.1738,
+    "void_distance": 0.1252,
+    "decode_error": 0.1387,
+    "proven": 0.87,
+    "template": "Deci",
+    "adoption": 0.464,
+    "adoption_gap": 0.0,
+    "buildability": 0.8,
+    "direct_competitors": [],
+    "vertical_players": [
+      "AT&T / Verizon edge AI",
+      "SoftBank AI-RAN",
+      "Spectro Cloud / edge Kubernetes",
+      "Speechmatics",
+      "Rebellions",
+      "Nokia ARC-Pro cell-site AI",
+      "Orange hosted models"
+    ],
+    "same_lane": [],
+    "neighbors": [
+      "Neural Magic",
+      "Pruna AI",
+      "NVIDIA BioNeMo",
+      "Unsloth",
+      "Deci"
+    ],
+    "void_between": [
+      "Nota AI",
+      "Recursion / Isomorphic science models",
+      "Perplexity Sonar API"
+    ],
+    "void_weights": [
+      0.495,
+      0.504,
+      0.001
+    ],
+    "self_hostable": false,
+    "rank": 60,
+    "xy": [
+      0.0752,
+      0.3435
+    ]
+  }
+]

@@ -11,3 +11,5 @@ dist/
 *.gguf
 /models/
 profiles/
+market_map/cache/
+.claude/launch.json

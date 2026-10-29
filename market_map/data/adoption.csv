@@ -1,0 +1,16 @@
+vertical,share,naics,source
+horizontal,0.246,all,"US Census BTOS sector table for the two weeks ending 2026-10-18, as compiled by a third party; not yet checked against the official Sector.xlsx. Government is an estimate (BTOS covers businesses only)."
+healthcare,0.276,62,
+finance,0.405,52,
+legal,0.438,54,
+manufacturing,0.229,31-33,
+agriculture,0.060,11,
+construction,0.161,23,
+retail,0.185,44-45,
+government,0.200,estimate,
+education,0.334,61,
+logistics,0.135,48-49,
+energy,0.167,22,
+media,0.464,51,
+telecom,0.464,51,
+automotive,0.229,31-33,
