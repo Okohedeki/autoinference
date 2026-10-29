@@ -1,0 +1,24 @@
+{
+  "name": "synthetic-funnel",
+  "target": {"id": "demo-target", "sequence": "MSEQIRLAAKELGVSKDTVRRWVKEGKIPAVKVGRRWLIDREDLK"},
+  "candidates": [
+    {"id": "m01", "smiles": "CCO"},
+    {"id": "m02", "smiles": "CC(=O)O"},
+    {"id": "m03", "smiles": "c1ccccc1O"},
+    {"id": "m04", "smiles": "CCN(CC)CC"},
+    {"id": "m05", "smiles": "CC(C)O"},
+    {"id": "m06", "smiles": "c1ccc2ccccc2c1"},
+    {"id": "m07", "smiles": "OC(=O)c1ccccc1"},
+    {"id": "m08", "smiles": "CCOC(=O)C"},
+    {"id": "m09", "smiles": "NC(=O)c1ccncc1"},
+    {"id": "m10", "smiles": "CC1=CC=CC=C1"},
+    {"id": "m11", "smiles": "C1CCNCC1"},
+    {"id": "m12", "smiles": "OCC(O)CO"}
+  ],
+  "stages": [
+    {"backend": "synthetic-screen", "keep_fraction": 0.5},
+    {"backend": "synthetic-pose", "keep_top": 3, "drop_invalid": true}
+  ],
+  "consensus": ["synthetic-screen"],
+  "seed": 0
+}

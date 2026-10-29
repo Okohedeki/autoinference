@@ -63,6 +63,41 @@ List every slot and its registered implementations:
 autoinference parts
 ```
 
+## Bio service
+
+`autoinference bio` hosts biology models as a service. It is built for batch campaigns, such as scoring many small molecules or binders against one protein target.
+
+- **Funnel campaigns.** A campaign is a list of stages. Each stage runs one model on the survivors of the previous stage and keeps the best of them, so expensive models only see promising candidates. A cost estimate, stage by stage, is available before anything runs. It switches from default per-candidate timings to measured ones once a backend has run.
+- **Trust checks.** Every predicted pose is checked for clashes, overlapping atoms and a ligand that is not touching the protein. Optional consensus backends re-score the final survivors and report how well the models agree.
+- **Tuning on assay data.** After lab testing, send the outcomes back. The service fits a re-scorer on every model score those candidates received, plus an isotonic calibration to the observed hit rate. Later campaigns that name the tuned model get a calibrated `p_active` for each candidate. Models and data stay in the workspace.
+- **Reproducible runs.** Each job records a manifest (spec digest, seed, backend fingerprints, environment, output digest). `verify` replays a job and checks that the output digest is identical. Submissions, results, tunings and replays go into a hash-chained audit log.
+- **Agents.** An MCP server exposes the same operations as tools: estimate, submit, poll, results, tune and verify.
+
+Backends:
+
+| Backend | What it is | Needs |
+|---|---|---|
+| `boltz2` | Boltz-2 co-folding and affinity, through the `boltz` command | `pip install boltz` (may be a separate environment), a GPU |
+| `rdkit-druglike` | QED drug-likeness filter for small molecules | `pip install rdkit` |
+| `synthetic-screen`, `synthetic-pose` | Seeded stand-ins for a cheap filter and a pose model, for demos and tests | nothing |
+
+```bash
+pip install -e ".[bio]"
+autoinference bio backends
+autoinference bio estimate examples/bio/funnel.json
+autoinference bio run examples/bio/funnel.json --root bio-workspace
+autoinference bio verify <job-id> --root bio-workspace
+autoinference bio tune <job-id> assay.csv --root bio-workspace      # CSV: id,active  or  id,value with --threshold
+autoinference bio serve --root bio-workspace --port 8100             # HTTP API under /v1
+autoinference bio mcp --root bio-workspace                           # MCP over stdio
+```
+
+To use Boltz-2 installed in another environment, pass its executable with `--boltz-command`, or set `AUTOINFERENCE_BOLTZ`. On Windows, add `"extra_args": "--no_kernels --num_workers 0"` to the stage's `options`, because Boltz's fused kernels are Linux-only. All candidates in a batch go to one `boltz predict` call. The target's alignment is computed on the first batch and reused for every later one.
+
+HTTP endpoints: `GET /v1/backends`, `POST /v1/estimate`, `POST /v1/campaigns`, `GET /v1/jobs`, `GET /v1/jobs/<id>`, `GET /v1/jobs/<id>/results?top=N`, `POST /v1/jobs/<id>/tune` (`{"labels": {"<id>": 1}}`), `POST /v1/jobs/<id>/verify`, `GET /v1/audit`.
+
+Cost figures use `--gpu-hour-price`, which defaults to a placeholder of 1.0. Set it to your actual rental price.
+
 ## Configuration
 
 ```toml
@@ -133,7 +168,9 @@ src/autoinference/
   ops/              op-library slots: interfaces, op table, reference and PyTorch implementations
   parts/            scheduler, KV allocator, prefix cache, input prep, sampler, loader, renderer, stubs
   models/           architecture registry and the Qwen3 dense / MoE graph
+  bio/              bio service: backends, campaigns, trust checks, tuning, provenance, HTTP and MCP
   server.py, cli.py
+examples/bio/       example campaign spec
 tests/
 reports/            design specification
 research_notes/     source material for the technique catalog

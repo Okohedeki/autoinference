@@ -1,4 +1,4 @@
-"""Command line: generate, chat, serve, and list the registered parts."""
+"""Command line: generate, chat, serve, list the registered parts, and run the bio service."""
 
 from __future__ import annotations
 
@@ -72,8 +72,71 @@ def cmd_parts(args: argparse.Namespace) -> None:
         print(f"{slot:18s} {', '.join(names)}")
 
 
+def _bio_service(args: argparse.Namespace, start: bool = True):
+    from .bio import BioService
+
+    options = {"boltz2": {"command": args.boltz_command}} if args.boltz_command else {}
+    return BioService(args.root, args.gpu_hour_price, options, start=start)
+
+
+def _read_spec(path: str) -> dict:
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def cmd_bio_serve(args: argparse.Namespace) -> None:
+    from .bio.service import serve
+
+    serve(_bio_service(args), args.host, args.port)
+
+
+def cmd_bio_mcp(args: argparse.Namespace) -> None:
+    from .bio.mcp_server import run_stdio
+
+    run_stdio(_bio_service(args))
+
+
+def cmd_bio_estimate(args: argparse.Namespace) -> None:
+    print(json.dumps(_bio_service(args, start=False).estimate(_read_spec(args.spec)), indent=2))
+
+
+def cmd_bio_run(args: argparse.Namespace) -> None:
+    service = _bio_service(args)
+    job = service.submit(_read_spec(args.spec))
+    print(f"job {job['job_id']}: estimated {job['estimate']['gpu_hours']:.4f} GPU-hours", file=sys.stderr)
+    status = service.wait(job["job_id"])
+    if status["status"] != "done":
+        print(status["error"], file=sys.stderr)
+        sys.exit(1)
+    data = service.results(job["job_id"], args.top)
+    for r in data["results"]:
+        pose = r.get("pose") or {}
+        flags = "" if pose.get("valid", True) else "  INVALID POSE: " + "; ".join(pose["issues"])
+        p = f"  p_active={r['p_active']:.3f}" if r.get("p_active") is not None else ""
+        scores = ", ".join(f"{k}={v:.3f}" for k, v in r["scores"].items())
+        print(f"{r['rank']:>3}. {r['id']}  {scores}{p}{flags}")
+    print(f"\njob {job['job_id']}, output digest {data['manifest']['output_digest'][:16]}", file=sys.stderr)
+
+
+def cmd_bio_verify(args: argparse.Namespace) -> None:
+    print(json.dumps(_bio_service(args).verify(args.job), indent=2))
+
+
+def cmd_bio_tune(args: argparse.Namespace) -> None:
+    from .bio.tuning import load_assay
+
+    labels = load_assay(args.assay, args.threshold, not args.lower_is_active)
+    model = _bio_service(args, start=False).fit_tuned_model(args.job, labels, args.model_id)
+    print(json.dumps({"id": model["id"], "metrics": model["metrics"]}, indent=2))
+
+
+def cmd_bio_backends(args: argparse.Namespace) -> None:
+    for b in _bio_service(args, start=False).backends():
+        print(f"{b['name']:18s} {b['seconds_per_item']:>8.3f} s/candidate  {b['doc']}")
+
+
 def main(argv: list[str] | None = None) -> None:
-    from . import models, ops, parts  # noqa: F401  (register built-ins)
+    from . import bio, models, ops, parts  # noqa: F401  (register built-ins)
 
     ap = argparse.ArgumentParser(prog="autoinference")
     sub = ap.add_subparsers(dest="command", required=True)
@@ -106,6 +169,45 @@ def main(argv: list[str] | None = None) -> None:
 
     p = sub.add_parser("parts", help="list every slot and its registered implementations")
     p.set_defaults(func=cmd_parts)
+
+    b = sub.add_parser("bio", help="hosted inference for biology models")
+    bsub = b.add_subparsers(dest="bio_command", required=True)
+
+    def bio_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--root", default="bio-workspace", help="workspace directory for jobs, models and logs")
+        p.add_argument("--gpu-hour-price", type=float, default=1.0, help="GPU rental price used for cost figures")
+        p.add_argument("--boltz-command", help="how to invoke boltz, if it is not on PATH")
+
+    for name, func, help_ in (("serve", cmd_bio_serve, "serve the HTTP API"),
+                              ("mcp", cmd_bio_mcp, "serve the MCP tools over stdio"),
+                              ("backends", cmd_bio_backends, "list the model backends")):
+        p = bsub.add_parser(name, help=help_)
+        bio_args(p)
+        if name == "serve":
+            p.add_argument("--host", default="127.0.0.1")
+            p.add_argument("--port", type=int, default=8100)
+        p.set_defaults(func=func)
+    p = bsub.add_parser("estimate", help="estimate the GPU time and cost of a campaign spec")
+    bio_args(p)
+    p.add_argument("spec")
+    p.set_defaults(func=cmd_bio_estimate)
+    p = bsub.add_parser("run", help="run a campaign spec and print the ranked results")
+    bio_args(p)
+    p.add_argument("spec")
+    p.add_argument("--top", type=int, default=20)
+    p.set_defaults(func=cmd_bio_run)
+    p = bsub.add_parser("verify", help="replay a finished job and check the output is identical")
+    bio_args(p)
+    p.add_argument("job")
+    p.set_defaults(func=cmd_bio_verify)
+    p = bsub.add_parser("tune", help="fit a re-scorer on assay outcomes for a finished job")
+    bio_args(p)
+    p.add_argument("job")
+    p.add_argument("assay", help="CSV with an id column and either active (0/1) or value")
+    p.add_argument("--threshold", type=float, help="value at which a candidate counts as active")
+    p.add_argument("--lower-is-active", action="store_true", help="smaller values are better, e.g. IC50")
+    p.add_argument("--model-id")
+    p.set_defaults(func=cmd_bio_tune)
 
     args = ap.parse_args(argv)
     args.func(args)
