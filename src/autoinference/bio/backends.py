@@ -192,6 +192,11 @@ class Boltz2(Backend):
     once per batch. The target's alignment is computed on the first batch and
     reused for every later one, since it depends only on the target.
 
+    With ``wsl=True`` the command runs inside WSL (for example
+    ``wsl -d Ubuntu -e /root/boltzenv/bin/boltz``) and every path passed to it is
+    translated to its ``/mnt/<drive>`` form. Boltz's data files cannot be
+    unpacked on native Windows, so this is the way to run it from Windows.
+
     Scores: ``score`` is Boltz's binder probability, ``affinity`` its predicted
     affinity value (lower binds tighter) and ``confidence`` its complex confidence.
     """
@@ -201,7 +206,8 @@ class Boltz2(Backend):
     produces_structures = True
 
     def __init__(self, command: str | None = None, workdir: str | None = None, use_msa_server: bool = True,
-                 diffusion_samples: int = 1, extra_args: str = "", cache: str | None = None) -> None:
+                 diffusion_samples: int = 1, extra_args: str = "", cache: str | None = None,
+                 wsl: bool = False, version: str | None = None) -> None:
         cmd = command or os.environ.get("AUTOINFERENCE_BOLTZ") or shutil.which("boltz")
         if not cmd:
             raise RuntimeError("boltz2 needs the boltz command: pip install boltz, or set AUTOINFERENCE_BOLTZ")
@@ -211,8 +217,12 @@ class Boltz2(Backend):
         self.diffusion_samples = diffusion_samples
         self.extra_args = _split(extra_args)
         self.cache = cache
+        self.wsl = wsl
         self._msa: dict[str, str] = {}
-        self.version = self._version()
+        self.version = version or self._version()
+
+    def _path(self, path: str | Path) -> str:
+        return _wsl_path(path) if self.wsl else str(path)
 
     def _version(self) -> str:
         try:
@@ -233,13 +243,13 @@ class Boltz2(Backend):
         inputs.mkdir(parents=True)
         msa = target.msa_path or self._msa.get(target.sequence)
         for c in candidates:
-            (inputs / f"{_safe(c.id)}.yaml").write_text(_boltz_yaml(target, c, msa))
-        args = [*self.command, "predict", str(inputs), "--out_dir", str(outdir), "--seed", str(seed),
+            (inputs / f"{_safe(c.id)}.yaml").write_text(_boltz_yaml(target, c, msa and self._path(msa)))
+        args = [*self.command, "predict", self._path(inputs), "--out_dir", self._path(outdir), "--seed", str(seed),
                 "--output_format", "pdb", "--diffusion_samples", str(self.diffusion_samples), *self.extra_args]
         if msa is None and self.use_msa_server:
             args.append("--use_msa_server")
         if self.cache:
-            args += ["--cache", self.cache]
+            args += ["--cache", self._path(self.cache)]
         proc = subprocess.run(args, capture_output=True, text=True)
         if proc.returncode != 0:
             raise RuntimeError(f"boltz predict failed ({proc.returncode}):\n{proc.stderr[-4000:]}")
@@ -271,6 +281,14 @@ def _split(command: str) -> list[str]:
     if os.name != "nt":
         return shlex.split(command)
     return [t[1:-1] if len(t) > 1 and t[0] == t[-1] == '"' else t for t in shlex.split(command, posix=False)]
+
+
+def _wsl_path(path: str | Path) -> str:
+    """A Windows drive path becomes its ``/mnt/<drive>/...`` form; POSIX paths pass through."""
+    text = str(Path(path).resolve()) if os.name == "nt" else str(path)
+    if len(text) > 1 and text[1] == ":":
+        return f"/mnt/{text[0].lower()}" + text[2:].replace("\\", "/")
+    return text
 
 
 def _safe(cid: str) -> str:

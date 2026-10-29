@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import threading
 import urllib.request
 from http.server import ThreadingHTTPServer
@@ -133,6 +134,14 @@ def test_boltz_input_reuses_the_alignment():
     assert "smiles: \"CCO\"" in ligand and "msa: \"msa/t.csv\"" in ligand and "binder: B" in ligand
     binder = _boltz_yaml(target, Candidate("b", sequence="GGG"), None)
     assert "affinity" not in binder and "sequence: GGG" in binder
+
+
+def test_wsl_paths():
+    from autoinference.bio.backends import _wsl_path
+
+    assert _wsl_path("/home/user/x") == "/home/user/x"
+    if os.name == "nt":
+        assert _wsl_path(r"D:\data\inputs") == "/mnt/d/data/inputs"
 
 
 @pytest.fixture
