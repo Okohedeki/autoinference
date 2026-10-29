@@ -150,7 +150,10 @@ SHORT = {
               "edge-runtime": "edge runtime", "appliance": "inference appliance", "platform": "deployment platform",
               "gateway": "model gateway", "optimization": "model optimizer", "observability": "inference monitor"},
     "modality": {"llm": "LLM", "vision": "vision", "speech": "speech", "video": "video", "embeddings": "retrieval",
-                 "multimodal": "multimodal", "code": "code", "science": "science"},
+                 "multimodal": "multimodal", "code": "code", "science": "bio and chem", "recsys": "recommender",
+                 "tabular": "tabular model", "timeseries": "forecasting", "graph": "graph model",
+                 "simulation": "simulation surrogate", "earth": "weather and earth", "pointcloud": "3D and lidar",
+                 "policy": "robot policy"},
 }
 
 

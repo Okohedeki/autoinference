@@ -25,7 +25,15 @@ MODALITY = {
     "embeddings": "embedding and retrieval models",
     "multimodal": "multimodal models",
     "code": "code models",
-    "science": "scientific and biology models",
+    "science": "biology and chemistry models such as protein, molecule and genomics models",
+    "recsys": "recommendation and ranking models",
+    "tabular": "tabular models such as gradient-boosted trees for scoring and fraud",
+    "timeseries": "time-series forecasting and anomaly detection models",
+    "graph": "graph neural network models",
+    "simulation": "physics simulation surrogate models",
+    "earth": "weather, climate and earth-observation models",
+    "pointcloud": "lidar, 3D and point-cloud models",
+    "policy": "robot control and reinforcement learning policy models",
 }
 
 DEPLOYMENT = {
@@ -160,6 +168,8 @@ INCOMPATIBLE = [
     ({"customer": "consumers"}, {"pricing": "license"}),
     ({"customer": "oem"}, {"deployment": "cloud"}),
     ({"modality": "science"}, {"customer": "consumers"}),
+    ({"modality": "simulation"}, {"customer": "consumers"}),
+    ({"modality": "tabular"}, {"customer": "consumers"}),
 ]
 
 
