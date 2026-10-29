@@ -83,8 +83,20 @@ DIFFERENTIATOR = {
     "customization": "domain customization",
 }
 
+# Who owns the hardware the inference runs on. A new supply model in a crowded layer is often the
+# whole idea, so this facet matters more than the industry a product is sold into.
+SUPPLY = {
+    "datacenter": "on compute the vendor owns or rents in data centers",
+    "customer-hw": "on hardware the customer already owns",
+    "user-device": "on the end user's own phone or computer",
+    "network-edge": "on a telecom or CDN edge network",
+    "crowd": "on spare GPUs pooled from many independent owners",
+    "third-party": "on other providers' capacity, resold or routed",
+}
+
 FACETS = {
     "layer": LAYER,
+    "supply": SUPPLY,
     "modality": MODALITY,
     "deployment": DEPLOYMENT,
     "customer": CUSTOMER,
@@ -170,9 +182,45 @@ VERTICAL_CUSTOMERS = {
 }
 
 
+# Where each supply model can physically serve from.
+SUPPLY_DEPLOYMENTS = {
+    "datacenter": {"cloud", "dedicated"},
+    "customer-hw": {"on-prem", "edge", "device"},
+    "user-device": {"device"},
+    "network-edge": {"edge"},
+    "crowd": {"cloud", "edge", "device"},
+    "third-party": {"cloud", "dedicated"},
+}
+
+# Offerings whose supply the deployment rule below gets wrong.
+SUPPLY_OVERRIDES = {
+    "Vast.ai": ["crowd"], "Salad": ["crowd"], "io.net": ["crowd"], "Chutes": ["crowd"], "Hyperbolic": ["crowd"],
+    "Cloudflare Workers AI": ["network-edge"], "Akamai Inference Cloud": ["network-edge"],
+    "Fastly AI Accelerator": ["network-edge"], "AT&T / Verizon edge AI": ["network-edge"],
+    "SoftBank AI-RAN": ["network-edge"], "Nokia ARC-Pro cell-site AI": ["network-edge"],
+}
+
+
+def supply_of(row: dict) -> list[str]:
+    """Derive an offering's supply facet from its layer and deployments, with a few known exceptions."""
+    if row["name"] in SUPPLY_OVERRIDES:
+        return SUPPLY_OVERRIDES[row["name"]]
+    if "gateway" in row["layer"]:
+        return ["third-party"]
+    out = []
+    for d in row["deployment"]:
+        s = {"cloud": "datacenter", "dedicated": "datacenter", "on-prem": "customer-hw",
+             "edge": "customer-hw", "device": "user-device"}[d]
+        if s not in out:
+            out.append(s)
+    return out
+
+
 def is_compatible(combo: dict[str, str]) -> bool:
     allowed = VERTICAL_CUSTOMERS.get(combo.get("vertical"))
     if allowed and combo.get("customer") and combo["customer"] not in allowed:
+        return False
+    if "supply" in combo and combo.get("deployment") not in SUPPLY_DEPLOYMENTS[combo["supply"]]:
         return False
     for a, b in INCOMPATIBLE:
         if all(combo.get(k) == v for k, v in a.items()) and all(combo.get(k) == v for k, v in b.items()):
@@ -185,6 +233,6 @@ def describe(combo: dict[str, str]) -> str:
     vertical = "" if combo["vertical"] == "horizontal" else f" in {VERTICAL[combo['vertical']]}"
     return (
         f"{LAYER[combo['layer']].capitalize()} for {MODALITY[combo['modality']]}, "
-        f"{DEPLOYMENT[combo['deployment']]}, sold to {CUSTOMER[combo['customer']]}{vertical} "
+        f"{DEPLOYMENT[combo['deployment']]} {SUPPLY[combo['supply']]}, sold to {CUSTOMER[combo['customer']]}{vertical} "
         f"through {PRICING[combo['pricing']]}, competing on {DIFFERENTIATOR[combo['differentiator']]}."
     )

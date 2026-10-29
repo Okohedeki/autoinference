@@ -1,0 +1,12 @@
+layer,modality,vertical,verdict,note
+gateway,vision,construction,partial,"Closed construction safety suites run many vision modules on site; no neutral layer hosts a contractor's own models."
+gateway,llm,energy,partial,"Energy AI platforms and agents exist; none is sold as a multi-LLM gateway for utilities."
+engine,vision,energy,taken,"Vision already runs on inspection trucks and drones in shipping utility products."
+gateway,vision,retail,taken,"In-store edge platforms already deploy and run many vision models across store fleets."
+optimization,vision,construction,open,"Only horizontal optimizers and academic work; nothing construction-specific."
+serverless-api,vision,energy,taken,"Substation edge vision is sold to utilities by several vendors."
+platform,speech,automotive,taken,"Embedded in-car voice platforms are sold to automakers by several vendors."
+engine,speech,automotive,taken,"Embedded in-car speech engines are licensed to automakers by several vendors."
+serverless-api,vision,logistics,taken,"Gate, yard and dock vision with on-site processing is a crowded category."
+engine,vision,construction,partial,"Finished on-machine and wearable products exist; no general on-device engine for job-site devices."
+appliance,vision,construction,taken,"AI surveillance trailers and rugged job-site AI boxes are sold by several vendors."

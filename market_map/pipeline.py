@@ -23,10 +23,10 @@ import numpy as np
 import torch
 
 from embed import Embedder
-from facets import ADOPTION_FALLBACK, BUILDABILITY, FACETS, describe, is_compatible
+from facets import ADOPTION_FALLBACK, BUILDABILITY, FACETS, describe, is_compatible, supply_of
 
 HERE = Path(__file__).parent
-PATTERN_FACETS = ["layer", "modality", "deployment", "customer", "pricing"]
+PATTERN_FACETS = ["layer", "supply", "modality", "deployment", "customer", "pricing"]
 SELF_HOSTED_LAYERS = {"engine", "edge-runtime", "appliance", "optimization", "serverless-api", "platform"}
 
 
@@ -35,10 +35,13 @@ def load_offerings(path: Path) -> list[dict]:
         rows = list(csv.DictReader(f))
     for row in rows:
         for facet, vocab in FACETS.items():
+            if facet == "supply":
+                continue
             row[facet] = [v.strip() for v in row[facet].split(";") if v.strip()]
             unknown = [v for v in row[facet] if v not in vocab]
             if unknown:
                 raise ValueError(f"{row['name']}: unknown {facet} {unknown}")
+        row["supply"] = supply_of(row)
     return rows
 
 
@@ -77,11 +80,14 @@ def plausibility(combo: dict, attested: set) -> float:
     return sum((a, combo[a], b, combo[b]) in attested for a, b in FACET_PAIRS) / len(FACET_PAIRS)
 
 
-def sample_candidates(n: int, offerings: list[dict], min_plausibility: float, rng: random.Random) -> list[dict]:
+def sample_candidates(n: int, offerings: list[dict], min_plausibility: float, industries: bool,
+                      rng: random.Random) -> list[dict]:
     """Facet combinations built from proven parts.
 
-    Half are transplants: a real offering's exact pattern moved to a different vertical. The rest are
-    random combinations whose facet pairs are almost all attested, allowing one new twist.
+    Half are mutations: a real offering's exact pattern with one thing changed. With `industries` that
+    one thing is the vertical; otherwise it is any facet except the vertical, such as who supplies the
+    compute or who the customer is. The rest are random combinations whose facet pairs are almost all
+    attested, allowing one new twist.
     """
     attested = attested_pairs(offerings)
     seen, out = set(), []
@@ -94,14 +100,21 @@ def sample_candidates(n: int, offerings: list[dict], min_plausibility: float, rn
 
     for row in offerings:
         for combo in combos_of(row, 12, rng):
-            for vertical in FACETS["vertical"]:
-                add({**combo, "vertical": vertical})
+            if industries:
+                for vertical in FACETS["vertical"]:
+                    add({**combo, "vertical": vertical})
+            else:
+                for facet in NON_VERTICAL:
+                    for value in FACETS[facet]:
+                        add({**combo, facet: value})
     out = rng.sample(out, min(len(out), n // 2))
     seen = {tuple(c[f] for f in FACETS) for c in out}
     tries = 0
     while len(out) < n and tries < 200 * n:
         tries += 1
         combo = {f: rng.choice(list(FACETS[f])) for f in FACETS}
+        if not industries:
+            combo["vertical"] = "horizontal"
         if plausibility(combo, attested) >= min_plausibility:
             add(combo)
     return out
@@ -141,10 +154,30 @@ SHORT = {
 }
 
 
+def lower_first(text: str) -> str:
+    """Lowercase a sentence's first letter unless it starts an acronym (API, KV, LLM)."""
+    return text if text[1:2].isupper() else text[:1].lower() + text[1:]
+
+
+PHRASES = {
+    "layer": lambda v: f"sell it as {FACETS['layer'][v]}",
+    "supply": lambda v: f"run it {FACETS['supply'][v]}",
+    "modality": lambda v: f"serve {FACETS['modality'][v]}",
+    "deployment": lambda v: f"deliver it {FACETS['deployment'][v]}",
+    "customer": lambda v: f"sell to {FACETS['customer'][v]}",
+    "pricing": lambda v: f"charge through {FACETS['pricing'][v]}",
+    "differentiator": lambda v: f"compete on {FACETS['differentiator'][v]}",
+}
+
+
 def title(combo: dict) -> str:
     vertical = "" if combo["vertical"] == "horizontal" else FACETS["vertical"][combo["vertical"]].split(" and ")[0].capitalize() + " "
     where = {"on-prem": "on-prem ", "edge": "edge ", "device": "on-device ", "dedicated": "private ", "cloud": ""}[combo["deployment"]]
-    return f"{vertical}{where}{SHORT['modality'][combo['modality']]} {SHORT['layer'][combo['layer']]}".strip()
+    source = {"crowd": "crowd-sourced ", "network-edge": "network-edge ", "third-party": "brokered ",
+              "user-device": "", "customer-hw": "", "datacenter": ""}[combo["supply"]]
+    customer = {"consumers": " for consumers", "smb": " for small businesses", "oem": " for device makers",
+                "regulated": " for regulated orgs", "developers": "", "enterprise": ""}[combo["customer"]]
+    return f"{vertical}{source}{where}{SHORT['modality'][combo['modality']]} {SHORT['layer'][combo['layer']]}{customer}".strip()
 
 
 def pitch(combo: dict, template: dict | None, adoption: float, nearest: list[str]) -> str:
@@ -152,14 +185,24 @@ def pitch(combo: dict, template: dict | None, adoption: float, nearest: list[str
     vertical = FACETS["vertical"][combo["vertical"]]
     parts = []
     if template:
-        parts.append(f"{template['name']} proves the pattern: {template['description'][0].lower()}{template['description'][1:]}")
-    if combo["vertical"] == "horizontal":
-        parts.append(f"Apply it to {FACETS['modality'][combo['modality']]} for {FACETS['customer'][combo['customer']]}.")
-    else:
+        parts.append(f"{template['name']} proves the pattern: {lower_first(template['description'])}")
+        changes = [PHRASES[f](combo[f]) for f in PATTERN_FACETS + ["differentiator"] if combo[f] not in template[f]]
+        if changes:
+            parts.append("The twist: " + "; ".join(changes) + ".")
+    if combo["vertical"] != "horizontal":
         parts.append(f"Bring it to {vertical}, where about {adoption:.0%} of firms use AI, for "
                      f"{FACETS['customer'][combo['customer']]} running {FACETS['modality'][combo['modality']]}.")
     parts.append(f"Nearest existing offerings in embedding space: {', '.join(nearest)}.")
     return " ".join(parts)
+
+
+def load_checked(path: Path) -> dict:
+    """Openings already researched by hand, keyed by (layer, modality, vertical). Taken ones are skipped."""
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8", newline="") as f:
+        return {(r["layer"], r["modality"], r["vertical"]): {"verdict": r["verdict"], "note": r["note"]}
+                for r in csv.DictReader(f)}
 
 
 def overlap(a: dict, row: dict, facets: list[str]) -> float:
@@ -170,6 +213,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--offerings", type=Path, default=HERE / "data" / "offerings.csv")
     ap.add_argument("--adoption", type=Path, default=HERE / "data" / "adoption.csv")
+    ap.add_argument("--industries", action="store_true",
+                    help="look for industry transplants scored on sector AI adoption, instead of new mechanisms")
+    ap.add_argument("--checked", type=Path, default=HERE / "data" / "checked.csv",
+                    help="hand-checked openings; taken ones are left out of the ranking")
     ap.add_argument("--out", type=Path, default=HERE / "out")
     ap.add_argument("--model", default=None, help="embedding model (default depends on hardware)")
     ap.add_argument("--candidates", type=int, default=30000, help="facet combinations used for decoding")
@@ -194,7 +241,10 @@ def main():
     off = desc_vecs + np.stack(facet_vecs)
     off /= np.linalg.norm(off, axis=1, keepdims=True)
 
-    candidates = sample_candidates(args.candidates, offerings, args.min_plausibility, rng)
+    if not args.industries:  # place offerings by how they work, not who they sell to
+        for row in offerings:
+            row["sold_into"], row["vertical"] = row["vertical"], ["horizontal"]
+    candidates = sample_candidates(args.candidates, offerings, args.min_plausibility, args.industries, rng)
     attested = attested_pairs(offerings)
     cand = embedder.embed([describe(c) for c in candidates], batch_size=128)
     print(f"{len(candidates)} candidate combinations embedded")
@@ -213,12 +263,15 @@ def main():
 
     max_adoption = max(adoption.values())
     names = {r["name"]: j for j, r in enumerate(offerings)}
+    checked = load_checked(args.checked)
     ideas, used_keys = [], set()
     nearest_cand = torch.topk(voids @ C.T, k=8, dim=1)
     for vi in order:
         for ci, sim in zip(nearest_cand.indices[vi].tolist(), nearest_cand.values[vi].tolist()):
             combo = candidates[ci]
             key = (combo["layer"], combo["modality"], combo["vertical"])
+            if not args.industries:
+                key = (combo["layer"], combo["modality"], combo["supply"])
             if key in used_keys:
                 continue
             used_keys.add(key)
@@ -229,7 +282,7 @@ def main():
             # Proven pattern: the closest offering in another vertical that shares the same layer.
             same_layer = [
                 (overlap(combo, r, PATTERN_FACETS), j) for j, r in enumerate(offerings)
-                if combo["layer"] in r["layer"] and combo["vertical"] not in r["vertical"]
+                if combo["layer"] in r["layer"] and (combo["vertical"] not in r["vertical"] or not args.industries)
             ]
             overlap_best, template = max(same_layer, default=(0.0, None))
             proven = 0.5 * plausibility(combo, attested) + 0.5 * overlap_best
@@ -244,10 +297,14 @@ def main():
             novelty = float((cand_nn < cand_nn[ci]).mean())  # percentile among all candidates
             gap = 1 - adoption[combo["vertical"]] / max_adoption
             build = BUILDABILITY[combo["layer"]]
-            score = (max(novelty, 1e-3) ** 0.35) * (max(proven, 0.2) ** 0.2) * (max(gap, 0.05) ** 0.25) * (build ** 0.2)
             same_lane = [n for n in vertical_players if combo["layer"] in offerings[names[n]]["layer"]]
-            score *= 0.5 if direct else 1.0
-            score *= float(np.exp(-0.15 * len(same_lane) - 0.02 * len(vertical_players)))  # crowded verticals
+            if args.industries:
+                score = (max(novelty, 1e-3) ** 0.35) * (max(proven, 0.2) ** 0.2) * (max(gap, 0.05) ** 0.25) * (build ** 0.2)
+                score *= 0.5 if direct else 1.0
+                score *= float(np.exp(-0.15 * len(same_lane) - 0.02 * len(vertical_players)))  # crowded verticals
+            else:
+                # A new mechanism in a crowded layer is fine, so crowding is reported but not penalized.
+                score = (max(novelty, 1e-3) ** 0.5) * (max(proven, 0.2) ** 0.25) * (build ** 0.25)
             ideas.append({
                 "facets": combo,
                 "title": title(combo),
@@ -270,6 +327,7 @@ def main():
                 "neighbors": [offerings[j]["name"] for j in neighbors],
                 "void_between": [offerings[j]["name"] for j in support[vi].tolist()],
                 "void_weights": [round(x, 3) for x in weights[vi].tolist()],
+                "checked": checked.get(key),
                 "self_hostable": combo["layer"] in SELF_HOSTED_LAYERS and combo["deployment"] in {"on-prem", "edge", "device", "dedicated"},
                 "_vec": idea_vec.cpu().numpy(),
             })
@@ -297,6 +355,7 @@ def main():
         idea.pop("_vec")
     map_data = {
         "model": embedder.model_name,
+        "mode": "industries" if args.industries else "mechanisms",
         "candidates": len(candidates),
         "adoption_source": adoption_source,
         "offerings": [

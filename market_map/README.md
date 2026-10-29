@@ -4,18 +4,19 @@ A tool for finding open positions in the AI inference market. It embeds every kn
 
 ## How it works
 
-1. **Offerings.** [`data/offerings.csv`](data/offerings.csv) lists about 250 inference products. Each one has a description and seven facets: layer, modality, deployment, customer, vertical, pricing and differentiator. The allowed values for each facet are in [`facets.py`](facets.py).
+1. **Offerings.** [`data/offerings.csv`](data/offerings.csv) lists about 300 inference products. Each one has a description and seven facets: layer, modality, deployment, customer, vertical, pricing and differentiator. An eighth facet, *supply*, says whose hardware the inference runs on: the vendor's data centers, the customer's own hardware, end-user devices, a network edge, pooled crowd GPUs, or other providers' capacity. Supply is derived from layer and deployment, with a few overrides. The allowed values for every facet are in [`facets.py`](facets.py).
 2. **Embedding.** Each offering is embedded twice: once from its own description, and once from sentences generated from the facets it covers. The two vectors are averaged. The default model is Qwen3-Embedding-0.6B.
-3. **Candidates.** The tool generates 30,000 facet combinations made from proven parts. Half are *transplants*: a real offering's exact pattern moved to another vertical. The other half are recombinations in which every pair of non-vertical facets already occurs together in some real product, except at most one pair, which allows one new twist. These candidates are the vocabulary for decoding.
+3. **Candidates.** The tool generates 30,000 facet combinations made from proven parts. Half are *mutations*: a real offering's exact pattern with one facet changed, such as who supplies the compute or who buys it. The other half are recombinations in which every pair of facets already occurs together in some real product, except at most one pair, which allows one new twist. These candidates are the vocabulary for decoding.
 4. **Void search.** Gradient ascent maximizes the soft minimum cosine distance to every offering. The point is constrained to a convex mixture of three real offerings, so it stays "between" products instead of drifting into nonsense.
-5. **Decoding.** Each void is mapped to the nearest candidate combination and written up as a title, a description and a pitch that names the offering whose pattern it copies.
-6. **Ranking.** The score is a weighted geometric mean of:
+5. **Decoding.** Each void is mapped to the nearest candidate combination. It is written up as a title, a description, and a pitch that names the offering whose pattern it copies and the twist that sets it apart.
+6. **Ranking.** By default, ideas are compared across the whole market by how they work, and industry is ignored. The score is a weighted geometric mean of:
    - **emptiness:** the percentile distance to the nearest offering;
    - **proven pattern:** how much of the idea already exists somewhere else;
-   - **adoption gap:** how low AI use is in the sector, from the Census Business Trends and Outlook Survey in [`data/adoption.csv`](data/adoption.csv);
    - **buildability:** whether a small team can build the layer.
 
-   Ideas lose score when an offering already serves that layer in that vertical, and when the vertical is crowded.
+   A new mechanism in a crowded layer counts as an opening, so crowding is reported but does not lower the score.
+
+   With `--industries`, the tool instead looks for proven patterns moved into new industries. It adds an **adoption gap** term, which measures how low AI use is in the sector, using the Census Business Trends and Outlook Survey in [`data/adoption.csv`](data/adoption.csv). It also lowers the score in crowded verticals. [`data/checked.csv`](data/checked.csv) records industry openings already researched by hand; the page shows their verdicts as labels.
 
 ## Setup
 

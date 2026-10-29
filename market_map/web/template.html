@@ -122,7 +122,7 @@ canvas#map.dragging { cursor: grabbing; }
     <canvas id="map" aria-label="Embedding map of AI inference offerings and open positions"></canvas>
     <header class="head">
       <h1>Where nobody serves <em>inference</em> yet</h1>
-      <p>Each point is a product embedded by what it does. Amber marks are voids found far from every offering, decoded back into a product.</p>
+      <p>Each point is a product embedded by how it works. Amber marks are voids found far from every offering, decoded back into a product with one proven pattern and a twist.</p>
       <div class="stats" id="stats"></div>
     </header>
     <div class="legend">
@@ -156,6 +156,15 @@ const VERTICAL_NAMES = {
   horizontal: "Any industry", healthcare: "Healthcare", finance: "Finance", legal: "Legal", manufacturing: "Manufacturing",
   agriculture: "Agriculture", construction: "Construction", retail: "Retail", government: "Government", education: "Education",
   logistics: "Logistics", energy: "Energy", media: "Media", telecom: "Telecom", automotive: "Automotive",
+};
+
+const INDUSTRIES = DATA.mode === "industries";
+const GROUP = INDUSTRIES ? "vertical" : "layer";
+const GROUP_NAMES = INDUSTRIES ? VERTICAL_NAMES : Object.fromEntries(
+  Object.entries(LAYER_NAMES).map(([k, v]) => [k, v[0].toUpperCase() + v.slice(1)]));
+const SUPPLY_NAMES = {
+  "datacenter": "vendor data centers", "customer-hw": "customer hardware", "user-device": "user devices",
+  "network-edge": "network edge", "crowd": "crowd-sourced GPUs", "third-party": "other providers",
 };
 
 let colors = {};
@@ -194,7 +203,7 @@ function resize() {
 
 function visibleIdeas() {
   return DATA.ideas.filter((d) =>
-    (filter.vertical === "all" || d.facets.vertical === filter.vertical) && (!filter.selfHosted || d.self_hostable));
+    (filter.vertical === "all" || d.facets[GROUP] === filter.vertical) && (!filter.selfHosted || d.self_hostable));
 }
 
 function hexA(hex, a) {
@@ -315,7 +324,9 @@ function renderDetail() {
   const el = $("detail");
   if (!d) { el.innerHTML = `<p class="empty">No openings match this filter.</p>`; return; }
   const f = d.facets;
-  const lane = d.same_lane.length ? `${d.same_lane.length} in the same lane: ${d.same_lane.slice(0, 3).join(", ")}` : "Nobody in the same layer and industry";
+  const lane = !INDUSTRIES
+    ? (d.direct_competitors.length ? `Same layer, modality and deployment: ${d.direct_competitors.slice(0, 3).join(", ")}` : "Nobody with this exact layer, modality and deployment")
+    : d.same_lane.length ? `${d.same_lane.length} in the same lane: ${d.same_lane.slice(0, 3).join(", ")}` : "Nobody in the same layer and industry";
   el.innerHTML = `
     <div class="eyebrow">Opening ${d.rank} of ${DATA.ideas.length} · score ${d.score.toFixed(2)}</div>
     <h2>${d.title}</h2>
@@ -323,17 +334,18 @@ function renderDetail() {
     <div class="bars">
       <span>emptiness</span><div class="bar"><div style="width:${pct(d.novelty)}%"></div></div><span>${pct(d.novelty)}</span>
       <span>proven pattern</span><div class="bar"><div style="width:${pct(d.proven)}%"></div></div><span>${pct(d.proven)}</span>
-      <span>adoption gap</span><div class="bar"><div style="width:${pct(d.adoption_gap)}%"></div></div><span>${pct(d.adoption_gap)}</span>
+      ${INDUSTRIES ? `<span>adoption gap</span><div class="bar"><div style="width:${pct(d.adoption_gap)}%"></div></div><span>${pct(d.adoption_gap)}</span>` : ""}
       <span>buildability</span><div class="bar"><div style="width:${pct(d.buildability)}%"></div></div><span>${pct(d.buildability)}</span>
     </div>
     <div class="chips">
       <span class="chip">${f.layer}</span><span class="chip">${f.modality}</span><span class="chip">${f.deployment}</span>
       <span class="chip">${f.customer}</span><span class="chip">${f.pricing}</span><span class="chip">${f.differentiator}</span>
-      <span class="chip">${pct(d.adoption)}% of firms use AI</span>
+      <span class="chip">runs on ${SUPPLY_NAMES[f.supply]}</span>
+      ${INDUSTRIES ? `<span class="chip">${pct(d.adoption)}% of firms use AI</span>` : ""}
       ${d.self_hostable ? `<span class="chip hot">self-hosted engine fit</span>` : ""}
     </div>
     <p>${d.pitch}</p>
-    <div class="near">${lane}. ${d.vertical_players.length} offerings in ${VERTICAL_NAMES[f.vertical].toLowerCase()} overall.</div>`;
+    <div class="near">${lane}.${INDUSTRIES ? ` ${d.vertical_players.length} offerings in ${VERTICAL_NAMES[f.vertical].toLowerCase()} overall.` : ""}</div>`;
 }
 
 function renderList() {
@@ -353,11 +365,11 @@ function select(d, fly = true) {
 
 function renderFilters() {
   const counts = {};
-  for (const d of DATA.ideas) counts[d.facets.vertical] = (counts[d.facets.vertical] || 0) + 1;
+  for (const d of DATA.ideas) counts[d.facets[GROUP]] = (counts[d.facets[GROUP]] || 0) + 1;
   const vs = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
   $("filters").innerHTML =
     `<button data-v="all" aria-pressed="${filter.vertical === "all"}">All ${DATA.ideas.length}</button>` +
-    vs.map((v) => `<button data-v="${v}" aria-pressed="${filter.vertical === v}">${VERTICAL_NAMES[v]} ${counts[v]}</button>`).join("") +
+    vs.map((v) => `<button data-v="${v}" aria-pressed="${filter.vertical === v}">${GROUP_NAMES[v] || v} ${counts[v]}</button>`).join("") +
     `<span class="sep"></span><button data-self="1" aria-pressed="${filter.selfHosted}">Self-hosted engine fit only</button>`;
 }
 
