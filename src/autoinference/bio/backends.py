@@ -189,8 +189,11 @@ class Boltz2(Backend):
     The command can live in a separate environment: set ``command`` (or the
     ``AUTOINFERENCE_BOLTZ`` environment variable) to its full invocation. All
     candidates in a batch go to one ``boltz predict`` call, so the model loads
-    once per batch. The target's alignment is computed on the first batch and
-    reused for every later one, since it depends only on the target.
+    once per batch. The target's alignment depends only on the target, so it is
+    fetched once (with the first candidate alone), passed to every other
+    candidate, and kept in ``msa_cache`` keyed by sequence for later campaigns.
+    Left to itself, ``boltz predict --use_msa_server`` fetches it again for
+    every candidate.
 
     With ``wsl=True`` the command runs inside WSL (for example
     ``wsl -d Ubuntu -e /root/boltzenv/bin/boltz``) and every path passed to it is
@@ -207,7 +210,7 @@ class Boltz2(Backend):
 
     def __init__(self, command: str | None = None, workdir: str | None = None, use_msa_server: bool = True,
                  diffusion_samples: int = 1, extra_args: str = "", cache: str | None = None,
-                 wsl: bool = False, version: str | None = None) -> None:
+                 wsl: bool = False, version: str | None = None, msa_cache: str | None = None) -> None:
         cmd = command or os.environ.get("AUTOINFERENCE_BOLTZ") or shutil.which("boltz")
         if not cmd:
             raise RuntimeError("boltz2 needs the boltz command: pip install boltz, or set AUTOINFERENCE_BOLTZ")
@@ -218,19 +221,28 @@ class Boltz2(Backend):
         self.extra_args = _split(extra_args)
         self.cache = cache
         self.wsl = wsl
-        self._msa: dict[str, str] = {}
+        self.msa_cache = Path(msa_cache) if msa_cache else self.workdir / "msa-cache"
         self.version = version or self._version()
 
     def _path(self, path: str | Path) -> str:
         return _wsl_path(path) if self.wsl else str(path)
 
     def _version(self) -> str:
+        """Ask the Python next to the boltz executable, since boltz may live in another environment."""
+        exe = self.command[-1]
+        sep = "/" if "/" in exe else "\\"
+        python = exe.rsplit(sep, 1)[0] + sep + ("python.exe" if exe.lower().endswith(".exe") else "python")
+        probe = [*self.command[:-1], python, "-c", "from importlib.metadata import version; print(version('boltz'))"]
         try:
-            from importlib.metadata import version
+            out = subprocess.run(probe, capture_output=True, text=True, timeout=60)
+            if out.returncode == 0 and out.stdout.strip():
+                return out.stdout.strip().splitlines()[-1]
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        return "unknown"
 
-            return version("boltz")
-        except Exception:
-            return "unknown"  # boltz lives in another environment
+    def _cached_msa(self, sequence: str) -> Path:
+        return self.msa_cache / f"{hashlib.sha256(sequence.encode()).hexdigest()[:24]}.csv"
 
     def fingerprint(self) -> dict[str, Any]:
         return {"name": self.name, "version": self.version, "diffusion_samples": self.diffusion_samples}
@@ -238,10 +250,22 @@ class Boltz2(Backend):
     def predict(self, target, candidates, seed):
         if not candidates:
             return []
-        batch = self.workdir / f"batch-{int(time.time() * 1000)}"
+        msa = target.msa_path
+        if msa is None and self._cached_msa(target.sequence).exists():
+            msa = str(self._cached_msa(target.sequence))
+        if msa is None and self.use_msa_server:
+            first = self._run(target, candidates[:1], seed, None)  # fetches and caches the alignment
+            if self._cached_msa(target.sequence).exists():
+                return first + self._run(target, candidates[1:], seed, str(self._cached_msa(target.sequence)))
+            return first + self._run(target, candidates[1:], seed, None)
+        return self._run(target, candidates, seed, msa)
+
+    def _run(self, target, candidates, seed, msa: str | None) -> list[Prediction]:
+        if not candidates:
+            return []
+        batch = self.workdir / f"batch-{time.time_ns()}"
         inputs, outdir = batch / "inputs", batch / "out"
         inputs.mkdir(parents=True)
-        msa = target.msa_path or self._msa.get(target.sequence)
         for c in candidates:
             (inputs / f"{_safe(c.id)}.yaml").write_text(_boltz_yaml(target, c, msa and self._path(msa)))
         args = [*self.command, "predict", self._path(inputs), "--out_dir", self._path(outdir), "--seed", str(seed),
@@ -255,9 +279,10 @@ class Boltz2(Backend):
             raise RuntimeError(f"boltz predict failed ({proc.returncode}):\n{proc.stderr[-4000:]}")
         results = next(outdir.glob("boltz_results_*"), outdir)
         if msa is None:
-            found = sorted((results / "msa").glob("*.csv"))
+            found = sorted((results / "msa").glob("*_0.csv"))
             if found:
-                self._msa[target.sequence] = str(found[0])
+                self.msa_cache.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(found[0], self._cached_msa(target.sequence))
         return [self._read(results / "predictions" / _safe(c.id), c) for c in candidates]
 
     def _read(self, pred_dir: Path, c: Candidate) -> Prediction:
@@ -285,7 +310,11 @@ def _split(command: str) -> list[str]:
 
 def _wsl_path(path: str | Path) -> str:
     """A Windows drive path becomes its ``/mnt/<drive>/...`` form; POSIX paths pass through."""
-    text = str(Path(path).resolve()) if os.name == "nt" else str(path)
+    text = str(path)
+    if text.startswith("/"):
+        return text
+    if os.name == "nt":
+        text = str(Path(text).resolve())
     if len(text) > 1 and text[1] == ":":
         return f"/mnt/{text[0].lower()}" + text[2:].replace("\\", "/")
     return text
