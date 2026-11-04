@@ -135,6 +135,45 @@ def cmd_bio_backends(args: argparse.Namespace) -> None:
         print(f"{b['name']:18s} {b['seconds_per_item']:>8.3f} s/candidate  {b['doc']}")
 
 
+def _modal_cli() -> list[str]:
+    import importlib.util
+
+    if importlib.util.find_spec("modal") is None:
+        sys.exit("Modal is not installed: pip install -e \".[cloud]\", then run modal setup")
+    return [sys.executable, "-m", "modal"]
+
+
+def cmd_bio_deploy(args: argparse.Namespace) -> None:
+    import os
+    import subprocess
+
+    env = dict(os.environ)
+    if args.gpu:
+        env["AUTOINFERENCE_MODAL_GPU"] = args.gpu
+    sys.exit(subprocess.run([*_modal_cli(), "deploy", "-m", "autoinference.bio.modal_app"], env=env).returncode)
+
+
+def cmd_bio_cloud_status(args: argparse.Namespace) -> None:
+    """Report whether Modal is installed, logged in and has the worker app deployed."""
+    import subprocess
+
+    from .bio.cloud import APP_NAME, WORKER
+
+    _modal_cli()
+    import modal
+
+    print(f"modal {modal.__version__} installed")
+    who = subprocess.run([sys.executable, "-m", "modal", "profile", "current"], capture_output=True, text=True)
+    if who.returncode != 0 or not who.stdout.strip():
+        sys.exit("not logged in: run  python -m modal setup")
+    print(f"profile: {who.stdout.strip()}")
+    try:
+        modal.Cls.from_name(APP_NAME, WORKER).hydrate()
+    except Exception as exc:  # noqa: BLE001 - report any lookup failure the same way
+        sys.exit(f"worker {APP_NAME}/{WORKER} not deployed ({type(exc).__name__}): run  autoinference bio deploy")
+    print(f"worker {APP_NAME}/{WORKER} deployed; use the boltz2-cloud backend in campaign stages")
+
+
 def main(argv: list[str] | None = None) -> None:
     from . import bio, models, ops, parts  # noqa: F401  (register built-ins)
 
@@ -208,6 +247,12 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--lower-is-active", action="store_true", help="smaller values are better, e.g. IC50")
     p.add_argument("--model-id")
     p.set_defaults(func=cmd_bio_tune)
+
+    p = bsub.add_parser("deploy", help="deploy the cloud GPU workers to Modal (needs modal setup first)")
+    p.add_argument("--gpu", help="default GPU type for the workers, as Modal names it")
+    p.set_defaults(func=cmd_bio_deploy)
+    p = bsub.add_parser("cloud-status", help="check the Modal login and the deployed workers")
+    p.set_defaults(func=cmd_bio_cloud_status)
 
     args = ap.parse_args(argv)
     args.func(args)

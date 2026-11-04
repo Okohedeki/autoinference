@@ -239,3 +239,105 @@ def test_mcp_tools(service):
         content = out[0] if isinstance(out, tuple) else out
     job_id = json.loads(content[0].text)["job_id"]
     assert service.wait(job_id)["status"] == "done"
+
+
+class FakeRunner:
+    """Stands in for the Modal workers: scores each chunk with the synthetic pose model."""
+
+    def __init__(self):
+        from autoinference.bio.backends import SyntheticPose
+
+        self.model = SyntheticPose()
+        self.calls = []
+
+    def call(self, request):
+        self.calls.append(request)
+        target = Target(**request["target"])
+        cands = [Candidate(**c) for c in request["candidates"]]
+        preds = self.model.predict(target, cands, request["seed"])
+        return {"predictions": [{"candidate_id": p.candidate_id, "scores": p.scores, "structure": p.structure}
+                                for p in preds],
+                "msa": request["msa"] or "fake-alignment", "gpu_seconds": 10.0 * len(cands),
+                "version": "9.9", "gpu": "FAKE-GPU"}
+
+    def map(self, requests):
+        return [self.call(r) for r in requests]
+
+
+def test_cloud_backend_fans_out_and_bills_gpu_time(tmp_path):
+    from autoinference.bio.cloud import Boltz2Cloud
+
+    runner = FakeRunner()
+    backend = Boltz2Cloud(chunk_size=3, msa_cache=str(tmp_path / "msa"), runner=runner)
+    target = Target(**TARGET)
+    cands = [Candidate(f"m{i}", smiles="C" * (i + 1)) for i in range(10)]
+    preds = backend.predict(target, cands, seed=1)
+
+    assert [p.candidate_id for p in preds] == [c.id for c in cands]
+    assert [len(r["candidates"]) for r in runner.calls] == [1, 3, 3, 3]  # alignment first, then chunks
+    assert runner.calls[0]["msa"] is None and all(r["msa"] == "fake-alignment" for r in runner.calls[1:])
+    assert sum(p.extras["gpu_seconds"] for p in preds) == pytest.approx(100.0)
+    assert backend.fingerprint()["gpu"] == "FAKE-GPU" and backend.version == "9.9"
+
+    runner.calls.clear()  # a later campaign on the same target reuses the cached alignment
+    backend.predict(target, cands[:4], seed=1)
+    assert [len(r["candidates"]) for r in runner.calls] == [3, 1]
+
+
+def test_campaign_cost_uses_billed_gpu_seconds(tmp_path):
+    from autoinference.bio.cloud import Boltz2Cloud
+
+    spec = spec_dict(12)
+    spec["stages"] = [{"backend": "boltz2-cloud", "keep_top": 3}]
+    backend = Boltz2Cloud(chunk_size=4, msa_cache=str(tmp_path / "msa"), runner=FakeRunner())
+    result = run_campaign(CampaignSpec.from_dict(spec), {"boltz2-cloud": backend})
+    report = result.stage_reports[0]
+    assert report["gpu_seconds"] == pytest.approx(120.0) and report["seconds"] < 120.0
+    assert report["seconds_per_item"] == pytest.approx(10.0)
+
+
+def test_runpod_runner_queues_and_polls(monkeypatch):
+    from autoinference.bio.cloud import RunPodRunner
+
+    fake = FakeRunner()
+    jobs, polls = {}, []
+
+    def http(self, method, path, body=None):
+        assert self.url.endswith("/ep123")
+        if method == "POST" and path == "/run":
+            jid = f"job{len(jobs)}"
+            jobs[jid] = fake.call(body["input"])
+            return {"id": jid, "status": "IN_QUEUE"}
+        jid = path.rsplit("/", 1)[1]
+        polls.append(jid)
+        if polls.count(jid) == 1:
+            return {"id": jid, "status": "IN_PROGRESS"}
+        return {"id": jid, "status": "COMPLETED", "output": jobs[jid]}
+
+    monkeypatch.setattr(RunPodRunner, "_http", http)
+    runner = RunPodRunner("ep123", api_key="test-key", poll_seconds=0)
+    request = {"target": TARGET, "candidates": [{"id": "a", "smiles": "CCO", "sequence": None}], "seed": 0,
+               "msa": None, "diffusion_samples": 1, "extra_args": ""}
+    out = runner.map([request, request])
+    assert len(out) == 2 and all(o["predictions"][0]["candidate_id"] == "a" for o in out)
+
+    def failing(self, method, path, body=None):
+        return {"id": "x"} if path == "/run" else {"id": "x", "status": "FAILED", "error": "out of memory"}
+
+    monkeypatch.setattr(RunPodRunner, "_http", failing)
+    with pytest.raises(RuntimeError, match="out of memory"):
+        runner.call(request)
+
+
+def test_cloud_provider_is_checked():
+    from autoinference.bio.cloud import Boltz2Cloud
+
+    with pytest.raises(ValueError):
+        Boltz2Cloud(provider="nowhere")
+    assert Boltz2Cloud(provider="runpod", runner=FakeRunner()).fingerprint()["provider"] == "runpod"
+
+
+def test_runpod_handler_rejects_unknown_fields():
+    from autoinference.bio.runpod_worker import handler
+
+    assert "error" in handler({"input": {"target": TARGET, "rm": "-rf"}})

@@ -119,9 +119,14 @@ def run_campaign(spec: CampaignSpec, backends: dict[str, Backend] | None = None,
         pool.sort(key=lambda p: (-p.scores.get(stage.rank_by, float("-inf")), p.candidate_id))
         pool = pool[:stage.survivors(len(pool))]
         survivors = [by_id[p.candidate_id] for p in pool]
+        # Cloud backends report the GPU time each prediction was billed for; a parallel stage's wall
+        # time is much shorter than that. Local backends hold one GPU, so wall time is GPU time.
+        billed = [p.extras["gpu_seconds"] for p in preds if "gpu_seconds" in p.extras]
+        gpu_seconds = sum(billed) if billed else elapsed
         reports.append({"backend": stage.backend, "scored": len(preds), "kept": len(survivors),
                         "invalid_poses": invalid, "seconds": round(elapsed, 4),
-                        "seconds_per_item": elapsed / len(preds) if preds else None})
+                        "gpu_seconds": round(gpu_seconds, 4),
+                        "seconds_per_item": gpu_seconds / len(preds) if preds else None})
 
     agreement: dict[str, float | None] = {}
     final_ids = [c.id for c in survivors]

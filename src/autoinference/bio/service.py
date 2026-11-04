@@ -219,7 +219,7 @@ class BioService:
                 rec["structure_file"] = f"poses/{name}.pdb"
         for report in result.stage_reports:
             self._record_timing(report["backend"], report["seconds_per_item"])
-        gpu_seconds = sum(r["seconds"] for r in result.stage_reports)
+        gpu_seconds = sum(r["gpu_seconds"] for r in result.stage_reports)
         out = result.to_dict()
         out["gpu_seconds"] = gpu_seconds
         out["cost"] = round(gpu_seconds / 3600 * self.gpu_hour_price, 6)

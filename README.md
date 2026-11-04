@@ -94,6 +94,45 @@ autoinference bio mcp --root bio-workspace                           # MCP over 
 
 To use Boltz-2 installed in another environment, pass its executable with `--boltz-command`, or set `AUTOINFERENCE_BOLTZ`. On Windows, add `"extra_args": "--no_kernels --num_workers 0"` to the stage's `options`, because Boltz's fused kernels are Linux-only. All candidates in a batch go to one `boltz predict` call. The target's alignment is computed on the first batch and reused for every later one.
 
+### Cloud GPUs (Modal or RunPod)
+
+The service runs anywhere small. Model calls run on Modal's GPUs through the `boltz2-cloud` backend. Each stage is split into chunks that run on many GPUs at once, and containers scale to zero between campaigns, so idle time isn't billed. Each model has its own container image, with its weights downloaded while the image builds.
+
+One-time setup (the same on Windows, macOS and Linux):
+
+```bash
+pip install -e ".[bio,cloud]"
+python -m modal setup                 # log in to your Modal account in the browser
+autoinference bio deploy              # build the worker image and deploy it (takes a while the first time)
+autoinference bio cloud-status        # check the login and the deployed worker
+```
+
+Then use `boltz2-cloud` as a stage backend:
+
+```json
+{"backend": "boltz2-cloud", "keep_top": 20, "options": {"chunk_size": 4, "gpu": "L40S"}}
+```
+
+- `chunk_size` sets how many candidates each container scores. Smaller chunks mean more GPUs at once and a shorter wall time, but each chunk pays the model load again.
+- `gpu` overrides the GPU type the worker was deployed with. `autoinference bio deploy --gpu <type>` changes that default.
+- The first candidate runs alone so the target's alignment is computed once. The alignment is then sent with every other chunk and cached locally under `~/.cache/autoinference/msa` (set `AUTOINFERENCE_CACHE` to move it).
+- Costs come from the GPU seconds each container reports, not from the stage's wall time, so set `--gpu-hour-price` to the price of the GPU type you chose.
+
+**RunPod Serverless** is the second provider, and is usually cheaper per GPU-hour for large batch campaigns. Build the worker image, push it to a registry, then create a Serverless endpoint from it in the RunPod console. The endpoint is where you pick the GPU type and the maximum worker count.
+
+```bash
+docker build -f deploy/runpod/Dockerfile -t <registry>/autoinference-boltz2:<tag> .
+docker push <registry>/autoinference-boltz2:<tag>
+```
+
+Then set `RUNPOD_API_KEY` in the service's environment and choose the provider per stage:
+
+```json
+{"backend": "boltz2-cloud", "options": {"provider": "runpod", "endpoint": "<endpoint-id>", "chunk_size": 4}}
+```
+
+`AUTOINFERENCE_CLOUD` and `AUTOINFERENCE_RUNPOD_ENDPOINT` set the defaults, so stages can leave out those options. Jobs are queued with `/run` and polled with `/status`. Both providers run the same chunk code, so their scores match.
+
 HTTP endpoints: `GET /v1/backends`, `POST /v1/estimate`, `POST /v1/campaigns`, `GET /v1/jobs`, `GET /v1/jobs/<id>`, `GET /v1/jobs/<id>/results?top=N`, `POST /v1/jobs/<id>/tune` (`{"labels": {"<id>": 1}}`), `POST /v1/jobs/<id>/verify`, `GET /v1/audit`.
 
 Cost figures use `--gpu-hour-price`, which defaults to a placeholder of 1.0. Set it to your actual rental price.
@@ -169,8 +208,10 @@ src/autoinference/
   parts/            scheduler, KV allocator, prefix cache, input prep, sampler, loader, renderer, stubs
   models/           architecture registry and the Qwen3 dense / MoE graph
   bio/              bio service: backends, campaigns, trust checks, tuning, provenance, HTTP and MCP
+                    cloud.py, modal_app.py and runpod_worker.py run model calls on cloud GPUs
   server.py, cli.py
 examples/bio/       example campaign spec
+deploy/runpod/      worker image for RunPod Serverless
 tests/
 reports/            design specification
 research_notes/     source material for the technique catalog
