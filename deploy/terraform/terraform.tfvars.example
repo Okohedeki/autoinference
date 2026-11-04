@@ -1,0 +1,5 @@
+environment           = "dev"
+cloudflare_account_id = "0123456789abcdef0123456789abcdef"
+cloudflare_api_token  = "cloudflare token with R2 and API Tokens write access"
+neon_api_key          = "neon api key"
+modal_secret_name     = "autoinference-platform"

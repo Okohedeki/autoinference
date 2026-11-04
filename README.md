@@ -82,6 +82,8 @@ autoinference platform run inputs.json --pipeline models/demo/funnel.json --appr
 autoinference platform deploy                                   # control plane and workers to Modal
 ```
 
+`deploy/terraform/` creates an environment's infrastructure in one `terraform apply`: the R2 bucket, an R2-scoped API token, the Neon Postgres project, and the Modal secret that hands their credentials to the control plane and workers. It needs a Cloudflare account id and API token and a Neon API key in `terraform.tfvars` (ignored by git), plus a logged-in Modal CLI.
+
 Deploying to Modal reads its settings from a Modal secret named `autoinference-platform` (`DATABASE_URL`, `STORAGE`, `R2_*`, `AUTOINFERENCE_ENV`). Each catalog model becomes its own worker class with its own image; the control plane runs as a web app with one warm container.
 
 ## Bio service
@@ -235,6 +237,7 @@ src/autoinference/
 models/             catalog: one directory per model (model.yaml + handler.py), plus example pipelines
 examples/bio/       example campaign spec
 deploy/runpod/      worker image for RunPod Serverless
+deploy/terraform/   R2 bucket, Neon project and the Modal secret for one environment
 tests/
 reports/            design specification
 research_notes/     source material for the technique catalog
