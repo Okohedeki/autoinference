@@ -176,6 +176,77 @@ def cmd_bio_cloud_status(args: argparse.Namespace) -> None:
     print(f"worker {APP_NAME}/{WORKER} deployed; use the boltz2-cloud backend in campaign stages")
 
 
+
+def _platform(args: argparse.Namespace, start: bool = True):
+    from .platform import Platform
+    from .platform.service import workspace_from
+
+    settings = workspace_from(args.root) if args.root else None
+    return Platform(settings, start=start)
+
+
+def cmd_platform_serve(args: argparse.Namespace) -> None:
+    import uvicorn
+
+    from .platform.api import create_app
+
+    platform = _platform(args)
+    print(f"platform API on http://{args.host}:{args.port}/v1 ({platform.executor.name} executor, "
+          f"{len(platform.catalog)} models)")
+    uvicorn.run(create_app(platform), host=args.host, port=args.port, log_level="warning")
+
+
+def cmd_platform_models(args: argparse.Namespace) -> None:
+    platform = _platform(args, start=False)
+    for spec in platform.catalog:
+        gpu = ",".join(spec.hardware.gpu) or "cpu"
+        print(f"{spec.id:28s} v{spec.version:8s} {spec.unit:14s} {spec.price_per_unit:>8.4f}  {gpu:12s} {spec.name}")
+
+
+def cmd_platform_project(args: argparse.Namespace) -> None:
+    """Create a project and its first API key. The key is printed once and never stored in clear."""
+    platform = _platform(args, start=False)
+    project = platform.create_project(args.name, credits=args.credits)
+    key = platform.create_key(project["id"], "initial")
+    print(json.dumps({"project_id": project["id"], "api_key": key["key"]}, indent=2))
+
+
+def cmd_platform_deploy(args: argparse.Namespace) -> None:
+    import os
+    import subprocess
+
+    env = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}
+    sys.exit(subprocess.run([*_modal_cli(), "deploy", "-m", "autoinference.platform.modal_app"], env=env).returncode)
+
+
+def cmd_platform_run(args: argparse.Namespace) -> None:
+    """Run one model or a pipeline file through the local service and print the result."""
+    platform = _platform(args)
+    project = platform.create_project("cli")
+    inputs = _read_spec(args.inputs)
+    if args.pipeline:
+        run = platform.submit_pipeline(project, _read_spec(args.pipeline), inputs)
+        while True:
+            st = platform.pipeline_status(project["id"], run["run_id"])
+            if st["status"] == "waiting_approval":
+                if not args.approve_all:
+                    print(json.dumps(st, indent=2))
+                    print(f"waiting for approval of step {st['current_step']}", file=sys.stderr)
+                    return
+                platform.approve_step(project["id"], run["run_id"], st["current_step"])
+            elif st["status"] in ("succeeded", "failed", "cancelled"):
+                break
+            time.sleep(0.2)
+        print(json.dumps(st, indent=2))
+    else:
+        st = platform.submit(project, args.model, inputs, "queue")
+        st = platform.wait(project["id"], st["request_id"], args.timeout)
+        if st["status"] != "succeeded":
+            print(json.dumps(st, indent=2), file=sys.stderr)
+            sys.exit(1)
+        print(json.dumps(platform.result(project["id"], st["request_id"]), indent=2))
+
+
 def main(argv: list[str] | None = None) -> None:
     from . import bio, models, ops, parts  # noqa: F401  (register built-ins)
 
@@ -255,6 +326,36 @@ def main(argv: list[str] | None = None) -> None:
     p.set_defaults(func=cmd_bio_deploy)
     p = bsub.add_parser("cloud-status", help="check the Modal login and the deployed workers")
     p.set_defaults(func=cmd_bio_cloud_status)
+
+    pl = sub.add_parser("platform", help="the model platform: catalog, API, pipelines")
+    plsub = pl.add_subparsers(dest="platform_command", required=True)
+
+    def platform_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--root", help="local workspace directory (default: settings from the environment)")
+
+    p = plsub.add_parser("serve", help="serve the HTTP API")
+    platform_args(p)
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8200)
+    p.set_defaults(func=cmd_platform_serve)
+    p = plsub.add_parser("models", help="list the catalog")
+    platform_args(p)
+    p.set_defaults(func=cmd_platform_models)
+    p = plsub.add_parser("project", help="create a project and print its first API key")
+    platform_args(p)
+    p.add_argument("name")
+    p.add_argument("--credits", type=float, default=0.0)
+    p.set_defaults(func=cmd_platform_project)
+    p = plsub.add_parser("run", help="run a model or a pipeline file locally and print the result")
+    platform_args(p)
+    p.add_argument("inputs", help="JSON file with the inputs")
+    p.add_argument("--model", help="model id, e.g. demo/score")
+    p.add_argument("--pipeline", help="pipeline JSON file")
+    p.add_argument("--approve-all", action="store_true", help="approve every gated step without stopping")
+    p.add_argument("--timeout", type=float, default=3600)
+    p.set_defaults(func=cmd_platform_run)
+    p = plsub.add_parser("deploy", help="deploy the control plane and model workers to Modal")
+    p.set_defaults(func=cmd_platform_deploy)
 
     args = ap.parse_args(argv)
     args.func(args)

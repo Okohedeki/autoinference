@@ -9,8 +9,9 @@ dist/
 .env*
 *.safetensors
 *.gguf
-/models/
+/models/**/weights/
 profiles/
 market_map/cache/
 .claude/launch.json
 bio-workspace/
+platform-workspace/

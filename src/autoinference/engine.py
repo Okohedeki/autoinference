@@ -16,7 +16,7 @@ from .observability import Profiler
 from .ops import OpTable
 from .parts.kv import KVStorage
 from .parts.loader import read_config, resolve_model_dir
-from .platform import free_memory_bytes, resolve_device, resolve_dtype
+from .device import free_memory_bytes, resolve_device, resolve_dtype
 from .registry import REGISTRY
 from .types import BatchPlan, Phase, Request, SamplingParams, SeqPlan, StepEvents
 

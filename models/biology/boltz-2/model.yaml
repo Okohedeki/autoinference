@@ -1,0 +1,65 @@
+id: biology/boltz-2
+version: "2.2.1"
+domain: biology
+name: Boltz-2
+description: >
+  Co-folding of a protein with a small molecule or a second protein, with a predicted
+  binding affinity for small molecules. Returns the complex structure and confidence scores.
+license: MIT
+source: https://github.com/jwohlwend/boltz
+unit: structure
+price_per_unit: 0.25
+sync: false
+tags: [structure, affinity, co-folding]
+hardware:
+  gpu: [L40S, A100]
+  timeout: 1800
+  concurrency: 1
+  max_containers: 20
+image:
+  python: "3.11"
+  pip: ["boltz[cuda]==2.2.1"]
+  env: {BOLTZ_CACHE: /opt/boltz-cache}
+  commands:
+    - mkdir -p /opt/boltz-cache
+    - python -c "from pathlib import Path; from boltz.main import download_boltz2; download_boltz2(Path('/opt/boltz-cache'))"
+weights:
+  boltz2_conf.ckpt: "see https://github.com/jwohlwend/boltz/releases"
+  boltz2_aff.ckpt: "see https://github.com/jwohlwend/boltz/releases"
+inputs:
+  type: object
+  required: [protein]
+  additionalProperties: false
+  properties:
+    protein:
+      type: string
+      description: Target protein sequence (one-letter codes)
+      minLength: 10
+    ligand:
+      type: string
+      description: Small molecule as SMILES. Give exactly one of ligand or binder.
+    binder:
+      type: string
+      description: Second protein sequence, for protein-protein complexes
+    msa:
+      type: string
+      format: file
+      description: Precomputed alignment for the target (CSV from a previous run). Computed when absent.
+    diffusion_samples:
+      type: integer
+      minimum: 1
+      maximum: 5
+      default: 1
+    seed:
+      type: integer
+      default: 0
+outputs:
+  type: object
+  properties:
+    score: {type: number, description: Binder probability (small molecules) or ipTM (proteins)}
+    affinity: {type: number, description: Predicted affinity value; lower binds tighter}
+    confidence: {type: number}
+    iptm: {type: number}
+    structure: {type: string, format: file, description: The complex, PDB format}
+    msa: {type: string, format: file, description: The target alignment, reusable in later calls}
+    checks: {type: object, description: Pose validity (clashes, contacts)}

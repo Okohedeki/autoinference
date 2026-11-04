@@ -63,6 +63,27 @@ List every slot and its registered implementations:
 autoinference parts
 ```
 
+## Platform
+
+`autoinference platform` is one API over a catalog of specialised models and pipelines of them. The design is in [`reports/Platform spec.md`](reports/Platform%20spec.md).
+
+- **Models** live in `models/<domain>/<name>/` as a `model.yaml` (typed JSON Schema inputs and outputs, billing unit, price, hardware, image recipe, license) and a `handler.py` (`load()` once per container, `run()` per request). File-typed fields become upload and download URLs. The handler never sees a provider SDK, so the same handler runs in-process, on Modal or on RunPod.
+- **Requests.** `POST /v1/models/<id>/run` waits for short calls; `/queue` returns a request id to poll, with an optional webhook. Every request records its model version, input digest, device, timings, units and price in a manifest.
+- **Pipelines** chain models: each step is one model call, or one per item of a list (`map`), fanned out across workers. Steps can `keep` the best items (a funnel), `approve` (pause until approved), `when` (skip), retry, and pin options. Each call is a normal request with its own id, logs and cost; a run can be rerun from any step with the earlier results reused. `models/demo/funnel.json` is an example.
+- **Storage and state.** Local mode uses SQLite and a directory and needs no accounts. Production uses Postgres and Cloudflare R2, set through the environment (`DATABASE_URL`, `STORAGE=r2`, `R2_*`), and runs model calls on Modal (`EXECUTOR=modal`).
+
+```bash
+pip install -e ".[platform]"
+autoinference platform models                                   # the catalog
+autoinference platform project my-project                       # a project and its API key (printed once)
+autoinference platform serve --root platform-workspace          # the API on http://127.0.0.1:8200
+autoinference platform run inputs.json --model demo/score       # one call, locally
+autoinference platform run inputs.json --pipeline models/demo/funnel.json --approve-all
+autoinference platform deploy                                   # control plane and workers to Modal
+```
+
+Deploying to Modal reads its settings from a Modal secret named `autoinference-platform` (`DATABASE_URL`, `STORAGE`, `R2_*`, `AUTOINFERENCE_ENV`). Each catalog model becomes its own worker class with its own image; the control plane runs as a web app with one warm container.
+
 ## Bio service
 
 `autoinference bio` hosts biology models as a service. It is built for batch campaigns, such as scoring many small molecules or binders against one protein target.
@@ -207,9 +228,11 @@ src/autoinference/
   ops/              op-library slots: interfaces, op table, reference and PyTorch implementations
   parts/            scheduler, KV allocator, prefix cache, input prep, sampler, loader, renderer, stubs
   models/           architecture registry and the Qwen3 dense / MoE graph
+  platform/         the model platform: catalog contract, runtime, executors, pipelines, service, API, Modal app
   bio/              bio service: backends, campaigns, trust checks, tuning, provenance, HTTP and MCP
                     cloud.py, modal_app.py and runpod_worker.py run model calls on cloud GPUs
   server.py, cli.py
+models/             catalog: one directory per model (model.yaml + handler.py), plus example pipelines
 examples/bio/       example campaign spec
 deploy/runpod/      worker image for RunPod Serverless
 tests/

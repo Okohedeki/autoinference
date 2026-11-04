@@ -18,6 +18,10 @@ The platform differentiators, which apply to every model rather than one domain:
 - **Provenance.** A manifest per run (inputs, model version, weights digest, seed, environment), deterministic replay, and a hash-chained audit log.
 - **Agents.** Every operation exposed as MCP tools over a remote server, with proper authorization.
 
+**Pipelines are a first-class product, not a feature.** Most value in these domains comes from chains of models (target to structure to docking to property filter to synthesizability; backbone generation to sequence design to refolding; crystal generation to relaxation to stability), so the platform offers standalone models and pipelines of them through the same API. A pipeline is a graph of model calls run as one request with one bill and one manifest, and every step is controllable: parameters, skip, retries, timeout, provider and GPU, keep rules, an approval gate that pauses the run, rerun from any step with earlier results reused, and each step's calls inspectable on their own.
+
+**Version 1 is limited to the domains that chain naturally:** biology, genetics, chemistry and physics (force fields and materials simulation). The remaining domains below are version 2.
+
 Domains (17): biology; genetics and single-cell; chemistry and materials; robotics; world models; decision models; autonomous; earth, weather and climate; engineering simulation and design; medical imaging; lab and microscopy imaging; cybersecurity; energy and grid; agriculture; particle physics, astronomy and fusion; neuroscience and BCI; document AI. The catalog itself lives in `models/` (section 6), not in this document.
 
 Not in scope: generative media (image, video, music, speech), general-purpose LLM serving, recommenders and ads, embeddings as a product. General perception models (segmentation, depth, detection) are hosted only as building blocks inside pipelines for the domains above.
@@ -106,7 +110,20 @@ GET  /v1/files/{id}                      metadata and a signed download URL
 
 Inputs reference files by id. Workers read inputs and write outputs through presigned R2 URLs, so bulk data never passes through the control plane.
 
-### 3.4 Workflows
+### 3.4 Pipelines
+
+```
+POST /v1/pipelines/estimate                       calls per step and price, from list lengths and keep rules
+POST /v1/pipelines/run                            {pipeline, inputs, webhook_url, rerun_from: {run_id, step}}
+GET  /v1/pipelines/runs/{id}                      status per step, current step, price, outputs
+GET  /v1/pipelines/runs/{id}/steps/{step}         every call of the step with inputs, outputs, kept and dropped items
+POST /v1/pipelines/runs/{id}/steps/{step}/approve
+POST /v1/pipelines/runs/{id}/cancel
+```
+
+A pipeline spec is a list of steps. Each step names a model and its inputs, which reference pipeline inputs (`$inputs.x`), earlier steps (`$fold.outputs.structure`, `$dock.items`) or the current item of a mapped step (`$item`). `map` fans a step out over a list; `keep` filters the mapped results (`top`, `fraction`, `min`, `max`, `valid_only`); `approve` pauses before the step; `when` skips it; `retries`, `timeout`, `options` and `checks` are per step. Catalog pipelines (`pipelines/<name>`) are specs with their own schema that run through the same endpoints as models.
+
+### 3.5 Workflows
 
 The cross-model operations that the differentiators need:
 
@@ -119,7 +136,7 @@ GET  /v1/audit                           the project's hash-chained log, verifia
 
 A campaign is the current bio funnel generalised: any model whose output has a sortable score can be a stage.
 
-### 3.5 Deployments (customer models)
+### 3.6 Deployments (customer models)
 
 ```
 POST /v1/deployments                     image, handler entry point, schema, hardware, scaling
@@ -129,7 +146,7 @@ POST /v1/deployments/{id}/run|queue      same shape as catalog models
 
 A deployment is a catalog entry that only its project can see. Same runtime contract, same metrics, same billing by GPU seconds.
 
-### 3.6 Account
+### 3.7 Account
 
 ```
 GET  /v1/usage                           units and cost by model, by day
@@ -137,7 +154,7 @@ GET  /v1/keys · POST /v1/keys · DELETE /v1/keys/{id}
 GET  /v1/projects/{id}/webhooks · POST ...
 ```
 
-### 3.7 MCP
+### 3.8 MCP
 
 `mcp.<domain>` serves the same operations as tools over streamable HTTP: `list_models`, `describe_model`, `run_model`, `queue_model`, `request_status`, `request_result`, `estimate`, `submit_campaign`, `tune`, `verify`. Each catalog model also appears as its own tool, generated from its schema, so an agent sees `fold_protein` rather than a generic `run_model` with a string argument.
 
@@ -159,9 +176,9 @@ Postgres tables (project-scoped, every row carries `project_id`):
 | `api_keys` | hash, prefix, scopes, rate limit, spend cap, last used |
 | `models`, `model_versions` | catalog entries, schemas, image digests, weights digests, unit, price, hardware |
 | `deployments` | customer models: same fields plus owning project and scaling settings |
-| `requests` | one row per run or queue call: model version, inputs digest, status, provider, provider job id, units, GPU seconds, timings, manifest |
+| `requests` | one row per run or queue call: model version, inputs digest, status, provider, provider job id, units, GPU seconds, timings, manifest; pipeline calls also carry the run id, step and item index |
 | `files` | R2 key, size, content type, digest, expiry |
-| `campaigns`, `campaign_stages` | funnel specs and per-stage reports |
+| `pipeline_runs` | pipeline spec, per-step state (calls, kept items, attempts, price), current step, approvals |
 | `tuned_models` | fitted re-scorers and their metrics |
 | `usage_events` | one per billable unit batch, synced to Stripe meters |
 | `credits` | prepaid balance ledger |

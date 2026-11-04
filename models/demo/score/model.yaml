@@ -1,0 +1,47 @@
+id: demo/score
+version: "1.0"
+domain: demo
+name: Demo scorer
+description: >
+  A seeded stand-in for a scoring model. It needs no GPU or weights and exists so the
+  platform, pipelines and tests run anywhere. It is not a model of anything real.
+license: Apache-2.0
+source: https://github.com/example/autoinference
+unit: molecule
+price_per_unit: 0.0001
+sync: true
+public: false
+tags: [demo, cpu]
+hardware:
+  gpu: []
+  timeout: 60
+  concurrency: 4
+image:
+  python: "3.11"
+inputs:
+  type: object
+  required: [target, molecule]
+  additionalProperties: false
+  properties:
+    target:
+      type: string
+      description: Protein sequence (one-letter codes)
+      minLength: 1
+    molecule:
+      type: string
+      description: Molecule as SMILES
+      minLength: 1
+    fail_if_contains:
+      type: string
+      description: Testing aid; the call fails when the molecule contains this text
+    report:
+      type: string
+      format: file
+      description: Optional file whose size is echoed back
+outputs:
+  type: object
+  properties:
+    score: {type: number, description: "Higher is better, between 0 and 1"}
+    qed: {type: number}
+    report_size: {type: integer}
+    pose: {type: string, format: file, description: A placeholder structure file}
