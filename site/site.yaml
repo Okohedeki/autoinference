@@ -1,0 +1,142 @@
+# AutoInference landing page, built with Scroll Studio (`studio build site`).
+# Early-access draft: the model list, API shape and sample output are illustrative until the public API ships.
+name: AutoInference
+description: "Serverless inference for biology, chemistry and physics models, with chains that check every step."
+theme: { preset: lab }
+nav:
+  logo: "M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5zM12 7.5v4.5M12 12l3.9 2.25M12 12l-3.9 2.25"
+  cta: { label: Request access, href: "#access" }
+sections:
+  - id: journey
+    type: scene3d
+    nav_label: Platform
+    layout: cards
+    style: glow
+    zoom: 12
+    final: dock
+    shade: strong
+    levels:
+      - { preset: network, params: { nodes: 110 } }
+      - { preset: star-system, params: { star: [9, 0, -3], orbit: "#5b8cff" } }
+      - { preset: lattice, params: { a: "#45f0a0", b: "#7fe3ff", bond: "#2f7a62" } }
+      - { preset: helix }
+    hud:
+      kind: legend
+      legend:
+        - { label: Physics, color: "#5b8cff" }
+        - { label: Chemistry, color: "#45f0a0" }
+        - { label: Biology, color: "#ff4fd8" }
+    steps:
+      - intro: true
+        kicker: AutoInference
+        title: Science models, <em>served.</em>
+        body: One API for open models of structure, molecules and matter. Call one, or chain several into a pipeline that checks its own work.
+        hint: Scroll to follow a run
+        button: { label: Request early access, href: "#access" }
+      - { kicker: 01 · The chain, title: Real questions <em>cross fields.</em>, length: 1.3,
+          body: "Designing a binder needs structure, chemistry and simulation models. Today that is three toolchains and a week of glue code.",
+          fact: "One request. Every model it needs, in order." }
+      - { kicker: 02 · Physics, title: Simulate <em>the forces.</em>, length: 1.3,
+          body: "Molecular dynamics and learned force fields score whether a pose holds up once atoms start moving.",
+          fact: "Short relaxations run between steps, not as a separate project." }
+      - { kicker: 03 · Chemistry, title: Predict <em>the molecule.</em>, length: 1.3,
+          body: "Property, reactivity and materials models screen candidates before anything expensive runs on them.",
+          fact: Filter thousands of candidates down to the few worth folding. }
+      - { kicker: 04 · Biology, title: "Fold, dock, <em>and check.</em>", length: 1.6,
+          body: "Co-folding models place the ligand in the protein. Each pose is checked for physical validity before it moves to the next step.",
+          fact: "First model live: Boltz-2 co-folding and affinity, on cloud GPUs." }
+
+  - type: intro
+    id: products
+    nav_label: Products
+    kicker: What you get
+    title: Three ways to run <em>a science model.</em>
+    body: Start with a hosted model, bring your own when you outgrow the catalog, and rent the GPUs when it is time to train.
+  - type: features
+    items:
+      - { tag: Model APIs, title: "A catalog, ready to call", body: "Open biology, chemistry and physics models behind one typed API. Inputs and outputs are validated, so results pass straight to the next model." }
+      - { tag: Serverless, title: Deploy your own model, body: "Ship a container or a checkpoint. It scales to zero when idle and up when a screen starts, with logs and per-run cost." }
+      - { tag: Compute, title: GPUs for training, body: "Reserved clusters for fine-tuning on your own assay data, with the tuned model served from the same place." }
+
+  - type: code
+    id: api
+    nav_label: API
+    surface: dark
+    length: 7
+    terminal: { logo: autoinference, prompt: "screen my ligands against the target, keep only poses that pass the checks", model: any coding agent }
+    files:
+      - path: screen.py
+        todo: "chain three models"
+        kind: edit
+        code: |2
+           import autoinference as ai
+          +
+          +chain = ai.chain(
+          +    ai.model("chem/property-filter", max_logp=5),
+          +    ai.model("bio/boltz-2", affinity=True),
+          +    ai.model("physics/relax", steps=2000),
+          +    checks=["pose_validity", "consensus"],
+          +)
+          +run = chain.submit(target="target.fasta", ligands="library.smi")
+      - path: autoinference runs show --latest
+        kind: run
+        todo: "read the audited run"
+        code: |
+          run  chain of 3 models   status  done
+          property-filter   library.smi   passed  412
+          boltz-2           412 poses     valid   371
+          relax             371 poses     stable  298
+          every input, seed and model version recorded
+    steps:
+      - title: Three models. <em>One call.</em>
+        body: Describe the chain once. Each step's output is typed and checked before the next model sees it.
+        state: { file: screen.py }
+        at: { grid: "1 / span 5", row: middle }
+      - title: A run you can <em>replay.</em>
+        body: Inputs, seeds, model versions and check results are stored with every run, so a hit can be reproduced months later.
+        state: { file: "autoinference runs show --latest" }
+        at: { grid: "1 / span 5", row: middle }
+
+  - type: timeline
+    id: chain
+    nav_label: Checks
+    kicker: Trust between steps
+    title: A chain is only as good as <em>its weakest step.</em>
+    items:
+      - { when: Filter, title: Screen the library, body: Chemistry models drop candidates that would never make a drug or a material. }
+      - { when: Fold, title: Place the ligand, body: Co-folding predicts the complex and its affinity. }
+      - { when: Check, title: Reject bad poses, body: "Clashes, broken geometry and low confidence stop here, instead of polluting the next step." }
+      - { when: Relax, title: Test it under physics, body: A short simulation shows whether the pose stays put. }
+      - { when: Rank, title: Agree before you trust, body: Consensus across models ranks what is worth sending to the bench. }
+
+  - type: features
+    id: why
+    nav_label: Why us
+    items:
+      - { tag: Agent-native, title: Built for agents, body: "Every model and chain is an MCP tool, so a research agent can plan a screen and run it without custom glue." }
+      - { tag: Reproducible, title: Audited by default, body: "Runs are pinned to model versions and seeds, with a record you can hand to a collaborator or a reviewer." }
+      - { tag: Your data, title: Tune on your assays, body: "Fine-tune a model on your own measurements and keep the weights. Your data never trains anyone else's model." }
+
+  - type: faq
+    id: faq
+    nav_label: FAQ
+    title: Questions
+    items:
+      - { q: "Which models are live?", a: "Boltz-2, for co-folding and binding affinity. Chemistry and physics models follow, picked with early users." }
+      - { q: "Can I run my own model?", a: "That is the serverless product: package your model, and it runs on the same GPUs, API and checks as the catalog." }
+      - { q: "Is this only for drug discovery?", a: "No. Materials, catalysis and simulation work use the same pattern: several models in a row, each checked before the next." }
+      - { q: "How is it priced?", a: "Per run, by GPU time. Early-access pricing is agreed with each design partner." }
+
+  - type: signup
+    id: access
+    nav_label: Access
+    kicker: Early access
+    title: Bring us a pipeline <em>you run by hand.</em>
+    body: We are working with a small group of labs and teams to choose the next models and chains. Tell us what you would chain first.
+    action: "mailto:hello@example.com"
+    name: email
+    label: Work email
+    placeholder: you@lab.org
+    button: Request access
+    note: We reply to every request. No marketing list.
+footer: { left: "© AutoInference. Early-access preview; model list and sample output are illustrative.", right: Biology · Chemistry · Physics }
