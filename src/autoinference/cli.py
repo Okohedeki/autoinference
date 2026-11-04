@@ -147,7 +147,7 @@ def cmd_bio_deploy(args: argparse.Namespace) -> None:
     import os
     import subprocess
 
-    env = dict(os.environ)
+    env = {**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}  # Modal prints box-drawing characters
     if args.gpu:
         env["AUTOINFERENCE_MODAL_GPU"] = args.gpu
     sys.exit(subprocess.run([*_modal_cli(), "deploy", "-m", "autoinference.bio.modal_app"], env=env).returncode)
@@ -155,6 +155,7 @@ def cmd_bio_deploy(args: argparse.Namespace) -> None:
 
 def cmd_bio_cloud_status(args: argparse.Namespace) -> None:
     """Report whether Modal is installed, logged in and has the worker app deployed."""
+    import os
     import subprocess
 
     from .bio.cloud import APP_NAME, WORKER
@@ -163,7 +164,8 @@ def cmd_bio_cloud_status(args: argparse.Namespace) -> None:
     import modal
 
     print(f"modal {modal.__version__} installed")
-    who = subprocess.run([sys.executable, "-m", "modal", "profile", "current"], capture_output=True, text=True)
+    who = subprocess.run([sys.executable, "-m", "modal", "profile", "current"], capture_output=True, text=True,
+                         encoding="utf-8", errors="replace", env={**os.environ, "PYTHONUTF8": "1"})
     if who.returncode != 0 or not who.stdout.strip():
         sys.exit("not logged in: run  python -m modal setup")
     print(f"profile: {who.stdout.strip()}")
