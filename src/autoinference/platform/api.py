@@ -48,8 +48,10 @@ def create_app(platform: Platform | None = None) -> FastAPI:
 
     @app.get("/health")
     def health():
-        return {"status": "ok", "environment": platform.settings.environment, "models": len(platform.catalog),
-                "executor": platform.executor.name}
+        settings = platform.settings
+        return {"status": "ok", "environment": settings.environment, "models": len(platform.catalog),
+                "executor": platform.executor.name, "storage": settings.storage,
+                "database": settings.database_url.split(":", 1)[0]}
 
     # --- models -----------------------------------------------------------------------------------
 
