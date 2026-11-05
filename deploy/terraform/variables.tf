@@ -10,7 +10,18 @@ variable "cloudflare_account_id" {
 }
 
 variable "cloudflare_api_token" {
-  description = "A Cloudflare API token that can create R2 buckets and API tokens (template: 'Edit Cloudflare Workers' plus 'API Tokens: Edit', or a custom token with Workers R2 Storage Write and API Tokens Write)"
+  description = "A Cloudflare API token with 'Workers R2 Storage: Edit' on the account; it creates the bucket"
+  type        = string
+  sensitive   = true
+}
+
+variable "r2_access_key_id" {
+  description = "Access key id of an R2 API token (R2 > Manage API tokens) with object read and write on the bucket"
+  type        = string
+}
+
+variable "r2_secret_access_key" {
+  description = "Secret access key of that R2 API token"
   type        = string
   sensitive   = true
 }
@@ -19,6 +30,12 @@ variable "neon_api_key" {
   description = "Neon API key (console → account settings → API keys)"
   type        = string
   sensitive   = true
+}
+
+variable "neon_org_id" {
+  description = "Neon organization that owns the project (null for a personal account)"
+  type        = string
+  default     = null
 }
 
 variable "neon_region" {

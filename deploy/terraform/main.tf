@@ -1,10 +1,11 @@
 # Infrastructure for one environment of the platform: an R2 bucket for files, a Neon Postgres
-# project for state, an R2-scoped API token, and the Modal secret that hands all of it to the
+# project for state, and the Modal secret that hands all of it to the
 # control plane and the workers.
 #
 #   cd deploy/terraform
 #   cp terraform.tfvars.example terraform.tfvars   # fill in the account id and API keys
 #   terraform init
+#   terraform import neon_project.db <project-id>   # only when the project was made with `neon init`
 #   terraform apply
 #
 # State holds secrets, so it stays local and ignored by git. Move it to a remote backend before
@@ -45,40 +46,21 @@ resource "cloudflare_r2_bucket" "files" {
   storage_class = "Standard"
 }
 
-# An API token limited to R2 object access. Its S3 credentials derive from it: the access key id
-# is the token's id and the secret is the SHA-256 of the token value.
-data "cloudflare_api_token_permission_groups_list" "r2_write" {
-  name  = "Workers R2 Storage Write"
-  scope = "com.cloudflare.api.account"
-}
-
+# The S3 credentials for the bucket come from an R2 API token made in the dashboard
+# (R2 > Manage API tokens, "Object Read & Write" scoped to this bucket). Cloudflare only lets
+# tokens be minted through the API by users with token-provisioning rights, so that one step
+# stays manual; everything else here is declared.
 locals {
-  r2_write_group = data.cloudflare_api_token_permission_groups_list.r2_write.result[0].id
-}
-
-resource "cloudflare_api_token" "r2" {
-  name = "${local.name}-r2"
-  policies = [{
-    effect            = "allow"
-    permission_groups = [{ id = local.r2_write_group }]
-    resources = jsonencode({
-      "com.cloudflare.api.account.${var.cloudflare_account_id}" = "*"
-    })
-  }]
-}
-
-locals {
-  r2_endpoint          = "https://${var.cloudflare_account_id}.r2.cloudflarestorage.com"
-  r2_access_key_id     = cloudflare_api_token.r2.id
-  r2_secret_access_key = sha256(cloudflare_api_token.r2.value)
+  r2_endpoint = "https://${var.cloudflare_account_id}.r2.cloudflarestorage.com"
 }
 
 # --- state: Neon Postgres -------------------------------------------------------------------------
 
 resource "neon_project" "db" {
   name                      = local.name
+  org_id                    = var.neon_org_id
   region_id                 = var.neon_region
-  pg_version                = 17
+  pg_version                = 18
   history_retention_seconds = 21600
 }
 
@@ -88,7 +70,7 @@ resource "neon_project" "db" {
 resource "terraform_data" "modal_secret" {
   triggers_replace = [
     neon_project.db.connection_uri,
-    local.r2_secret_access_key,
+    var.r2_secret_access_key,
     cloudflare_r2_bucket.files.name,
     var.environment,
   ]
@@ -105,7 +87,7 @@ resource "terraform_data" "modal_secret" {
         "DATABASE_URL": os.environ["TF_DATABASE_URL"],
         "R2_BUCKET": "${cloudflare_r2_bucket.files.name}",
         "R2_ENDPOINT": "${local.r2_endpoint}",
-        "R2_ACCESS_KEY_ID": "${local.r2_access_key_id}",
+        "R2_ACCESS_KEY_ID": "${var.r2_access_key_id}",
         "R2_SECRET_ACCESS_KEY": os.environ["TF_R2_SECRET"],
       }
       args = [sys.executable, "-m", "modal", "secret", "create", "${var.modal_secret_name}", "--force"]
@@ -114,7 +96,7 @@ resource "terraform_data" "modal_secret" {
     EOT
     environment = {
       TF_DATABASE_URL = neon_project.db.connection_uri
-      TF_R2_SECRET    = local.r2_secret_access_key
+      TF_R2_SECRET    = var.r2_secret_access_key
     }
   }
 }

@@ -16,3 +16,5 @@ market_map/cache/
 bio-workspace/
 platform-workspace/
 site/.build/
+.neon
+node_modules/
