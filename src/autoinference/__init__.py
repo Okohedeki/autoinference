@@ -1,8 +1,7 @@
-"""AutoInference: a slotted LLM inference engine whose every part is swappable, and the platform
-that serves specialised models on top of it.
+"""AutoInference: a slotted LLM inference engine whose every part is swappable.
 
-The engine (which needs PyTorch) is imported on first use, so the platform's
-control plane and CPU-only workers can import this package without it.
+The engine (which needs PyTorch) is imported on first use, so tools that only need the
+registry can import this package without it.
 """
 
 from __future__ import annotations

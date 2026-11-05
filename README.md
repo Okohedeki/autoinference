@@ -63,103 +63,6 @@ List every slot and its registered implementations:
 autoinference parts
 ```
 
-## Platform
-
-`autoinference platform` is one API over a catalog of specialised models and pipelines of them. The design is in [`reports/Platform spec.md`](reports/Platform%20spec.md).
-
-- **Models** live in `models/<domain>/<name>/` as a `model.yaml` (typed JSON Schema inputs and outputs, billing unit, price, hardware, image recipe, license) and a `handler.py` (`load()` once per container, `run()` per request). File-typed fields become upload and download URLs. The handler never sees a provider SDK, so the same handler runs in-process, on Modal or on RunPod.
-- **Requests.** `POST /v1/models/<id>/run` waits for short calls; `/queue` returns a request id to poll, with an optional webhook. Every request records its model version, input digest, device, timings, units and price in a manifest.
-- **Pipelines** chain models: each step is one model call, or one per item of a list (`map`), fanned out across workers. Steps can `keep` the best items (a funnel), `approve` (pause until approved), `when` (skip), retry, and pin options. Each call is a normal request with its own id, logs and cost; a run can be rerun from any step with the earlier results reused. `models/demo/funnel.json` is an example.
-- **Storage and state.** Local mode uses SQLite and a directory and needs no accounts. Production uses Postgres and Cloudflare R2, set through the environment (`DATABASE_URL`, `STORAGE=r2`, `R2_*`), and runs model calls on Modal (`EXECUTOR=modal`).
-
-```bash
-pip install -e ".[platform]"
-autoinference platform models                                   # the catalog
-autoinference platform project my-project                       # a project and its API key (printed once)
-autoinference platform serve --root platform-workspace          # the API on http://127.0.0.1:8200
-autoinference platform run inputs.json --model demo/score       # one call, locally
-autoinference platform run inputs.json --pipeline models/demo/funnel.json --approve-all
-autoinference platform deploy                                   # control plane and workers to Modal
-```
-
-`deploy/terraform/` creates an environment's infrastructure in one `terraform apply`: the R2 bucket, an R2-scoped API token, the Neon Postgres project, and the Modal secret that hands their credentials to the control plane and workers. It needs a Cloudflare account id and API token and a Neon API key in `terraform.tfvars` (ignored by git), plus a logged-in Modal CLI.
-
-Deploying to Modal reads its settings from a Modal secret named `autoinference-platform` (`DATABASE_URL`, `STORAGE`, `R2_*`, `AUTOINFERENCE_ENV`). Each catalog model becomes its own worker class with its own image; the control plane runs as a web app with one warm container.
-
-## Bio service
-
-`autoinference bio` hosts biology models as a service. It is built for batch campaigns, such as scoring many small molecules or binders against one protein target.
-
-- **Funnel campaigns.** A campaign is a list of stages. Each stage runs one model on the survivors of the previous stage and keeps the best of them, so expensive models only see promising candidates. A cost estimate, stage by stage, is available before anything runs. It switches from default per-candidate timings to measured ones once a backend has run.
-- **Trust checks.** Every predicted pose is checked for clashes, overlapping atoms and a ligand that is not touching the protein. Optional consensus backends re-score the final survivors and report how well the models agree.
-- **Tuning on assay data.** After lab testing, send the outcomes back. The service fits a re-scorer on every model score those candidates received, plus an isotonic calibration to the observed hit rate. Later campaigns that name the tuned model get a calibrated `p_active` for each candidate. Models and data stay in the workspace.
-- **Reproducible runs.** Each job records a manifest (spec digest, seed, backend fingerprints, environment, output digest). `verify` replays a job and checks that the output digest is identical. Submissions, results, tunings and replays go into a hash-chained audit log.
-- **Agents.** An MCP server exposes the same operations as tools: estimate, submit, poll, results, tune and verify.
-
-Backends:
-
-| Backend | What it is | Needs |
-|---|---|---|
-| `boltz2` | Boltz-2 co-folding and affinity, through the `boltz` command | `pip install boltz` (may be a separate environment), a GPU |
-| `rdkit-druglike` | QED drug-likeness filter for small molecules | `pip install rdkit` |
-| `synthetic-screen`, `synthetic-pose` | Seeded stand-ins for a cheap filter and a pose model, for demos and tests | nothing |
-
-```bash
-pip install -e ".[bio]"
-autoinference bio backends
-autoinference bio estimate examples/bio/funnel.json
-autoinference bio run examples/bio/funnel.json --root bio-workspace
-autoinference bio verify <job-id> --root bio-workspace
-autoinference bio tune <job-id> assay.csv --root bio-workspace      # CSV: id,active  or  id,value with --threshold
-autoinference bio serve --root bio-workspace --port 8100             # HTTP API under /v1
-autoinference bio mcp --root bio-workspace                           # MCP over stdio
-```
-
-To use Boltz-2 installed in another environment, pass its executable with `--boltz-command`, or set `AUTOINFERENCE_BOLTZ`. On Windows, add `"extra_args": "--no_kernels --num_workers 0"` to the stage's `options`, because Boltz's fused kernels are Linux-only. All candidates in a batch go to one `boltz predict` call. The target's alignment is computed on the first batch and reused for every later one.
-
-### Cloud GPUs (Modal or RunPod)
-
-The service runs anywhere small. Model calls run on Modal's GPUs through the `boltz2-cloud` backend. Each stage is split into chunks that run on many GPUs at once, and containers scale to zero between campaigns, so idle time isn't billed. Each model has its own container image, with its weights downloaded while the image builds.
-
-One-time setup (the same on Windows, macOS and Linux):
-
-```bash
-pip install -e ".[bio,cloud]"
-python -m modal setup                 # log in to your Modal account in the browser
-autoinference bio deploy              # build the worker image and deploy it (takes a while the first time)
-autoinference bio cloud-status        # check the login and the deployed worker
-```
-
-Then use `boltz2-cloud` as a stage backend:
-
-```json
-{"backend": "boltz2-cloud", "keep_top": 20, "options": {"chunk_size": 4, "gpu": "L40S"}}
-```
-
-- `chunk_size` sets how many candidates each container scores. Smaller chunks mean more GPUs at once and a shorter wall time, but each chunk pays the model load again.
-- `gpu` overrides the GPU type the worker was deployed with. `autoinference bio deploy --gpu <type>` changes that default.
-- The first candidate runs alone so the target's alignment is computed once. The alignment is then sent with every other chunk and cached locally under `~/.cache/autoinference/msa` (set `AUTOINFERENCE_CACHE` to move it).
-- Costs come from the GPU seconds each container reports, not from the stage's wall time, so set `--gpu-hour-price` to the price of the GPU type you chose.
-
-**RunPod Serverless** is the second provider, and is usually cheaper per GPU-hour for large batch campaigns. Build the worker image, push it to a registry, then create a Serverless endpoint from it in the RunPod console. The endpoint is where you pick the GPU type and the maximum worker count.
-
-```bash
-docker build -f deploy/runpod/Dockerfile -t <registry>/autoinference-boltz2:<tag> .
-docker push <registry>/autoinference-boltz2:<tag>
-```
-
-Then set `RUNPOD_API_KEY` in the service's environment and choose the provider per stage:
-
-```json
-{"backend": "boltz2-cloud", "options": {"provider": "runpod", "endpoint": "<endpoint-id>", "chunk_size": 4}}
-```
-
-`AUTOINFERENCE_CLOUD` and `AUTOINFERENCE_RUNPOD_ENDPOINT` set the defaults, so stages can leave out those options. Jobs are queued with `/run` and polled with `/status`. Both providers run the same chunk code, so their scores match.
-
-HTTP endpoints: `GET /v1/backends`, `POST /v1/estimate`, `POST /v1/campaigns`, `GET /v1/jobs`, `GET /v1/jobs/<id>`, `GET /v1/jobs/<id>/results?top=N`, `POST /v1/jobs/<id>/tune` (`{"labels": {"<id>": 1}}`), `POST /v1/jobs/<id>/verify`, `GET /v1/audit`.
-
-Cost figures use `--gpu-hour-price`, which defaults to a placeholder of 1.0. Set it to your actual rental price.
-
 ## Configuration
 
 ```toml
@@ -230,14 +133,8 @@ src/autoinference/
   ops/              op-library slots: interfaces, op table, reference and PyTorch implementations
   parts/            scheduler, KV allocator, prefix cache, input prep, sampler, loader, renderer, stubs
   models/           architecture registry and the Qwen3 dense / MoE graph
-  platform/         the model platform: catalog contract, runtime, executors, pipelines, service, API, Modal app
-  bio/              bio service: backends, campaigns, trust checks, tuning, provenance, HTTP and MCP
-                    cloud.py, modal_app.py and runpod_worker.py run model calls on cloud GPUs
+  device.py         device and dtype selection
   server.py, cli.py
-models/             catalog: one directory per model (model.yaml + handler.py), plus example pipelines
-examples/bio/       example campaign spec
-deploy/runpod/      worker image for RunPod Serverless
-deploy/terraform/   R2 bucket, Neon project and the Modal secret for one environment
 tests/
 reports/            design specification
 research_notes/     source material for the technique catalog
